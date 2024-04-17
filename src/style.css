@@ -1,0 +1,65 @@
+@font-face {
+  font-family: 'monserat';
+  font-weight: 300;
+  src: url('./assets/Montserrat-Regular.woff2');
+}
+@font-face {
+  font-family: 'monserat';
+  font-weight: 600;
+  src: url('./assets/Montserrat-SemiBold.woff2');
+}
+
+:root {
+  --blue: #005bff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'monserat';
+}
+
+input,
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+}
+
+input {
+  font-size: 18px;
+  border: 1px solid transparent;
+}
+
+input:focus-visible {
+  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.5);
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+
+  background-color: var(--blue);
+  color: #fff;
+
+  transition: 0.3s ease;
+  transition-property: transform, opacity;
+}
+
+button:active {
+  transform: scale(0.9);
+}
+
+button:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
