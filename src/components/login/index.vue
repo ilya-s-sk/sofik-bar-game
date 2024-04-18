@@ -33,7 +33,7 @@
   });
   const loginFieldsCaption = computed(() => {
     return login.showError ? loginErrorText : '';
-  })
+  });
 
   const validateFields = (): boolean => {
     const fields = [login, password];
