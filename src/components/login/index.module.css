@@ -21,12 +21,16 @@
   width: 100%;
 }
 
-.showPass {
+.caption {
   position: absolute;
   right: 10px;
   bottom: -25px;
   align-self: end;
   font-size: 12px;
+}
+
+.caption.error {
+  color: var(--red);
 }
 
 .button {
