@@ -1,23 +1,20 @@
 <script setup lang="ts">
   import { ref, reactive, computed } from 'vue';
   import { loginRegExp, passErrorText, loginErrorText } from './consts';
-
-  interface IField {
-    value: string;
-    showError: boolean;
-    validate: () => boolean
-  }
+  import Button from '../ui/button/Button.vue';
+  import { ILoginField } from '../../types';
 
   const isPassVisible = ref(false);
+  const isPending =  ref(false);
 
-  const login = reactive<IField>({
+  const login = reactive<ILoginField>({
     value: '',
     showError: false,
     validate() {
       return loginRegExp.test(this.value);
     }
   });
-  const password = reactive<IField>({
+  const password = reactive<ILoginField>({
     value: '',
     showError: false,
     validate() {
@@ -27,7 +24,7 @@
 
   const passFieldCaption = computed(() => {
     if (!password.showError && password.value.length > 0) {
-      return isPassVisible ? 'Скрыть' : 'Показать'
+      return isPassVisible.value ? 'Скрыть' : 'Показать'
     }
     return password.showError ? passErrorText : '';
   });
@@ -45,6 +42,10 @@
     return fields.some(f => f.showError);
   };
 
+  const showPass = () => {
+    isPassVisible.value = !isPassVisible.value
+  }
+
   const handleSubmit = (event: Event) => {
     event.preventDefault();
 
@@ -52,10 +53,11 @@
     if (hasError) {
       return;
     }
-  }
 
-  const showPass = () => {
-    isPassVisible.value = !isPassVisible.value
+    isPending.value = true;
+    setTimeout(() => {
+      isPending.value = false;
+    }, 1000);
   }
 </script>
 
@@ -85,7 +87,11 @@
           @click="showPass"
         >{{ passFieldCaption }}</span>
       </label>
-      <button :class="$style.button">Войти</button>
+      <Button
+        :class="$style.button"
+        :isLoading="isPending"
+        :disabled="isPending"
+      >Войти</Button>
     </form>
   </section>
 </template>
