@@ -14,18 +14,22 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 8px;
 }
 
 .input {
   width: 100%;
 }
 
+.captionBlock {
+  min-height: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .caption {
-  position: absolute;
-  right: 10px;
-  bottom: -25px;
-  align-self: end;
   font-size: 12px;
 }
 
@@ -34,5 +38,5 @@
 }
 
 .button {
-  margin-top: 30px;
+  margin-top: 25px;
 }
