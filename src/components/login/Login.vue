@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
+import Button from "../ui/button/UI-Button.vue";
+import Dialog from "../ui/dialog/UI-Dialog.vue";
+import Info from "../ui/icons/Info.vue";
 import { loginRegExp, passErrorText, loginErrorText } from "./consts";
-import Button from "../ui/button/Button.vue";
 import { ILoginField, IUserData } from "../../types";
 
 const emit = defineEmits<{
   (e: "set-user-data", data: IUserData): void;
 }>();
 
-const isPassVisible = ref(false);
 const isPending = ref(false);
+const isPassVisible = ref(false);
+const isInfoModalShow = ref(false);
 
 const login = reactive<ILoginField>({
   value: "",
@@ -81,11 +84,19 @@ const handleSubmit = async (event: Event) => {
 
 <template>
   <section :class="$style.login">
-    <h1 :class="$style.title">Приветики</h1>
+    <div :class="$style.infoBlock">
+      <h1 :class="$style.title">Приветики</h1>
+      <p :class="$style.text">
+        Это Софик Бар Игра.
+      </p>
+      <p :class="$style.text">
+        Представься: <button :class="$style.infoButton" @click="() => isInfoModalShow = true" aria-label="Информация"><Info /></button>
+      </p>
+    </div>
 
     <form :class="$style.form" @submit="handleSubmit">
       <label :class="$style.field">
-        <span>Логин</span>
+        <span :class="$style.label">Имя</span>
         <input
           :class="$style.input"
           v-model="login.value"
@@ -102,7 +113,7 @@ const handleSubmit = async (event: Event) => {
       </label>
 
       <label :class="$style.field">
-        <span>Пароль</span>
+        <span :class="$style.label">Пароль</span>
         <input
           :class="$style.input"
           v-model="password.value"
@@ -134,6 +145,13 @@ const handleSubmit = async (event: Event) => {
         >Войти</Button
       >
     </form>
+
+    <Dialog :isShow="isInfoModalShow" @close="() => isInfoModalShow = false">
+      <p>
+        Придумай себе имя и пароль или введи те, что вводил раньше<br><br>
+        Если ты Софик - введи свои зарезервированные имя с паролем
+      </p>
+    </Dialog>
   </section>
 </template>
 
