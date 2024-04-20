@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import Login from "./components/login/Login.vue";
-import { IUserData } from "./types";
-import { storageEntry } from "./storage/index";
-import { onMounted } from "vue";
-import { useStore } from './store';
+import { onBeforeMount } from "vue";
+import Login from "~/components/login/Login.vue";
+import Game from '~/components/game/Game.vue';
+import { IUserData } from "~/types";
+import { storageEntry } from "~/storage/index";
+import { useStore } from '~/store';
 
 const store = useStore();
 
-const getUserData = (userData: IUserData) => {
+const setUserData = (userData: IUserData) => {
   store.setUserData(userData);
   storageEntry.setUserData(userData);
 };
 
-onMounted(() => {
+onBeforeMount(() => {
   const storedUserData = storageEntry.getUserData();
   if (!storedUserData) {
     return;
@@ -23,7 +24,8 @@ onMounted(() => {
 
 <template>
   <main :class="$style.main">
-    <Login v-if="!store.hasUserData" @set-user-data="getUserData" />
+    <Login v-if="!store.hasUserData" @set-user-data="setUserData" />
+    <Game v-else />
   </main>
 </template>
 

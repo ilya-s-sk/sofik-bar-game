@@ -1,4 +1,4 @@
-import { IUserData } from "../types";
+import { IUserData } from "~/types";
 
 const USER_DATA_LS_KEY = 'user-data-ls-key';
 

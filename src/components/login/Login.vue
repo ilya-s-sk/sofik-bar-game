@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
-import Button from "../ui/button/UI-Button.vue";
-import Dialog from "../ui/dialog/UI-Dialog.vue";
-import Info from "../ui/icons/Info.vue";
+import Button from "~/components/ui/button/UI-Button.vue";
+import Dialog from "~/components/ui/dialog/UI-Dialog.vue";
+import Info from "~/components/ui/icons/InfoIcon.vue";
+import { ILoginField, IUserData } from "~/types";
 import { loginRegExp, passErrorText, loginErrorText } from "./consts";
-import { ILoginField, IUserData } from "../../types";
 
 const emit = defineEmits<{
   (e: "set-user-data", data: IUserData): void;
@@ -72,6 +72,7 @@ const handleSubmit = async (event: Event) => {
       id: 1,
       name: "Даник",
       isSofik: false,
+      score: 0,
     };
     emit("set-user-data", userData);
   } catch (err) {
@@ -86,17 +87,22 @@ const handleSubmit = async (event: Event) => {
   <section :class="$style.login">
     <div :class="$style.infoBlock">
       <h1 :class="$style.title">Приветики</h1>
+      <p :class="$style.text">это Софик Бар Игра</p>
       <p :class="$style.text">
-        Это Софик Бар Игра.
-      </p>
-      <p :class="$style.text">
-        Представься: <button :class="$style.infoButton" @click="() => isInfoModalShow = true" aria-label="Информация"><Info /></button>
+        представься:
+        <button
+          :class="[$style.infoButton, 'icon-button']"
+          @click="() => (isInfoModalShow = true)"
+          aria-label="Информация"
+        >
+          <Info />
+        </button>
       </p>
     </div>
 
     <form :class="$style.form" @submit="handleSubmit">
       <label :class="$style.field">
-        <span :class="$style.label">Имя</span>
+        <span :class="$style.label">имя</span>
         <input
           :class="$style.input"
           v-model="login.value"
@@ -113,7 +119,7 @@ const handleSubmit = async (event: Event) => {
       </label>
 
       <label :class="$style.field">
-        <span :class="$style.label">Пароль</span>
+        <span :class="$style.label">пароль</span>
         <input
           :class="$style.input"
           v-model="password.value"
@@ -140,15 +146,15 @@ const handleSubmit = async (event: Event) => {
       </label>
       <Button
         :class="$style.button"
-        :isLoading="isPending"
+        :loading="isPending"
         :disabled="isPending"
         >Войти</Button
       >
     </form>
 
-    <Dialog :isShow="isInfoModalShow" @close="() => isInfoModalShow = false">
+    <Dialog :isShow="isInfoModalShow" @close="() => (isInfoModalShow = false)">
       <p>
-        Придумай себе имя и пароль или введи те, что вводил раньше<br><br>
+        Придумай себе имя и пароль или введи те, что вводил раньше<br /><br />
         Если ты Софик - введи свои зарезервированные имя с паролем
       </p>
     </Dialog>

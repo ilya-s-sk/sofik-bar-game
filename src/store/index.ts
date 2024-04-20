@@ -1,13 +1,24 @@
 import { defineStore } from "pinia";
-import { IUserData } from "../types";
+import { ITaskEntity, IUserData } from "~/types";
+
+interface IState {
+  userData: IUserData;
+  currentBarName: string;
+  tasksList: ITaskEntity[];
+}
 
 export const useStore = defineStore('store', {
-  state: () => ({
+  state: (): IState => ({
     userData: {
       id: -1,
       name: '',
       isSofik: false,
-    }
+      score: 0,
+    },
+
+    currentBarName: '',
+
+    tasksList: [],
   }),
   getters: {
     hasUserData(): boolean {
@@ -15,11 +26,12 @@ export const useStore = defineStore('store', {
     }
   },
   actions: {
-    setUserData(userData: IUserData) {
-      const { id, name, isSofik } = userData;
+    setUserData(userData: Partial<IUserData>) {
       this.userData = {
-        id, name, isSofik,
+        ...this.userData,
+        ...userData,
       }
-    }
+    },
+    
   }
 });

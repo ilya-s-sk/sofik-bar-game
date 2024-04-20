@@ -1,0 +1,22 @@
+.scoreTitle {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.tasksTitle {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.listItem {
+  padding: 20px 0;
+}
+
+.listItem:not(:last-child) {
+  border-bottom: 1px solid var(--light-blue);
+}
