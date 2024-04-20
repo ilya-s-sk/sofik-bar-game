@@ -69,8 +69,8 @@ const handleSubmit = async (event: Event) => {
   try {
     await pr;
     const userData = {
-      id: 1,
-      name: "Даник",
+      id: Date.now(),
+      name: login.value,
       isSofik: false,
       score: 0,
     };

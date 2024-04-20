@@ -3,20 +3,23 @@ import { onBeforeMount } from "vue";
 import Login from "~/components/login/Login.vue";
 import Game from '~/components/game/Game.vue';
 import { IUserData } from "~/types";
-import { storageEntry } from "~/storage/index";
+import { storageEntry } from "~/storage";
 import { useStore } from '~/store';
 
 const store = useStore();
 
 useStore().$subscribe((_, state) => {
-  storageEntry.setUserData(state.userData);
-  storageEntry.setTasksList(state.tasksList);
-  storageEntry.setCurrentBarName(state.currentBarName);
+  [
+    { state: state.userData, action: storageEntry.setUserData.bind(storageEntry) },
+    { state: state.tasksList, action: storageEntry.setTasksList.bind(storageEntry) },
+    { state: state.currentBarName, action: storageEntry.setCurrentBarName.bind(storageEntry) },
+  ].forEach(item => {
+    item.action(item.state as any) // TODO fix type
+  });
 })
 
 const setUserData = (userData: IUserData) => {
   store.setUserData(userData);
-  storageEntry.setUserData(userData);
 };
 
 onBeforeMount(() => {
@@ -29,7 +32,7 @@ onBeforeMount(() => {
   storedData.forEach(data => {
     if (!data.data) return;
 
-    store[data.field] = data.data as any; // TODO fix
+    store[data.field] = data.data as any; // TODO fix type
   });
 })
 </script>
