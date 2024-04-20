@@ -1,6 +1,7 @@
 import { IUserData } from "~/types";
 
-const USER_DATA_LS_KEY = 'user-data-ls-key';
+const USER_DATA_LS_KEY = 'sofik-bar-game-user-data-ls-key';
+export const SHOW_TASKS_LS_KEY = 'sofik-bar-game-show-tasks-status'
 
 class StorageEntry {
   setItem<T>(key: string, value: T) {
@@ -13,6 +14,10 @@ class StorageEntry {
 
   getItem(key: string) {
     return localStorage.getItem(key);
+  }
+
+  removeItem(key: string): void {
+    localStorage.removeItem(key);
   }
 
   setUserData(userData: IUserData) {
@@ -31,6 +36,18 @@ class StorageEntry {
     } catch {
       return null;
     }
+  }
+
+  setTasksVisibilityStatus() {
+    this.setItem<string>(SHOW_TASKS_LS_KEY, '1');
+  }
+
+  getTasksVisibilityStatus(): boolean {
+    return Boolean(this.getItem(SHOW_TASKS_LS_KEY));
+  }
+
+  removedTasksVisiblityStatus() {
+    this.removeItem(SHOW_TASKS_LS_KEY);
   }
 }
 

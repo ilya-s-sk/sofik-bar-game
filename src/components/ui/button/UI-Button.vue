@@ -2,7 +2,7 @@
 interface IProps {
   loading?: boolean,
   disabled?: boolean,
-  theme: 'blue' | 'red',
+  theme?: 'blue' | 'red',
 }
 withDefaults(defineProps<IProps>(), {
   theme: 'blue',

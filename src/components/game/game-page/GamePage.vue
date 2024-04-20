@@ -1,15 +1,32 @@
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { onBeforeMount, onBeforeUnmount, ref } from "vue";
+import UIButton from "~/components/ui/button/UI-Button.vue";
 import { useStore } from "~/store";
+import { storageEntry } from "~/storage";
+import { ITaskEntity } from "~/types";
 import TaskItem from "./task-item/TaskItem.vue";
-// import UIButton from '~/components/ui/button/UI-Button.vue';
 
 const store = useStore();
 
-const completeTask = (index: number, status: boolean) => {
-  store.tasksList[index].completed = status;
-}
-onMounted(() => {});
+const showTasks = ref(false);
+
+const openTasks = () => {
+  showTasks.value = true;
+  storageEntry.setTasksVisibilityStatus();
+};
+
+const completeTask = (index: number, task: ITaskEntity) => {
+  store.tasksList[index].completed = !task.completed;
+  store.userData.score += task.cost * (task.completed ? 1 : -1);
+};
+
+onBeforeMount(() => {
+  showTasks.value = storageEntry.getTasksVisibilityStatus();
+});
+
+onBeforeUnmount(() => {
+  storageEntry.removedTasksVisiblityStatus();
+})
 </script>
 
 <template>
@@ -17,15 +34,22 @@ onMounted(() => {});
     <h2 :class="$style.scoreTitle">Твои очки: {{ store.userData.score }}</h2>
     <p>Тебе в этот бар: {{ store.currentBarName }}</p>
 
-    <h2 :class="$style.tasksTitle">Твои задания:</h2>
-    <ul :class="$style.list">
-      <li :class="$style.listItem" v-for="(task, index) in store.tasksList" :key="task.id">
-        <TaskItem
-          :task-data="task"
-          @complete="(status) => completeTask(index, status)"
-        />
-      </li>
-    </ul>
+    <div v-if="!showTasks" :class="$style.showTasksBlock">
+      <p>Когда дойдешь, можешь открыть задания</p>
+      <UIButton @click="openTasks">Я на месте</UIButton>
+    </div>
+
+    <div v-else>
+      <h2 :class="$style.tasksTitle">Твои задания:</h2>
+      <ul :class="$style.list">
+        <li :class="$style.listItem" v-for="(task, index) in store.tasksList" :key="task.id">
+          <TaskItem
+            :task-data="task"
+            @complete="() => completeTask(index, task)"
+          />
+        </li>
+      </ul>
+    </div>
   </section>
 </template>
 

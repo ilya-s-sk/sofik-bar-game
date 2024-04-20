@@ -3,6 +3,14 @@
   margin-bottom: 10px;
 }
 
+.showTasksBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 10px;
+  margin-top: 30px;
+}
+
 .tasksTitle {
   margin-top: 30px;
   margin-bottom: 10px;
