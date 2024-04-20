@@ -26,6 +26,11 @@ export const useStore = defineStore('store', {
     },
     hasGameData(): boolean {
       return this.tasksList.length > 0 && Boolean(this.currentBarName);
+    },
+    preparedTasksList(state) {
+      return state.tasksList.filter(t => !t.completed).concat(
+        state.tasksList.filter(t => t.completed)
+      )
     }
   },
   actions: {
@@ -35,10 +40,11 @@ export const useStore = defineStore('store', {
         ...userData,
       }
     },
-    updateTaskByIndex(index: number, data: Partial<ITaskEntity>) {
-      if (index in this.tasksList) {
-        this.tasksList[index] = {
-          ...this.tasksList[index],
+    updateTaskById(id: number, data: Partial<ITaskEntity>) {
+      const taskIndex = this.tasksList.findIndex(t => t.id === id);
+      if (taskIndex !== -1) {
+        this.tasksList[taskIndex] = {
+          ...this.tasksList[taskIndex],
           ...data,
         }
       }

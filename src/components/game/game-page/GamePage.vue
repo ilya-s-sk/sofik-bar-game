@@ -15,9 +15,9 @@ const openTasks = () => {
   storageEntry.setTasksVisibilityStatus();
 };
 
-const completeTask = (index: number, task: ITaskEntity) => {
-  store.tasksList[index].completed = !task.completed;
-  store.userData.score += task.cost * (task.completed ? 1 : -1);
+const completeTask = (task: ITaskEntity) => {
+  store.userData.score += task.cost * (task.completed ? -1 : 1);
+  store.updateTaskById(task.id, { completed: !task.completed});
 };
 
 onBeforeMount(() => {
@@ -41,14 +41,14 @@ onBeforeUnmount(() => {
 
     <div v-else>
       <h2 :class="$style.tasksTitle">Твои задания:</h2>
-      <ul :class="$style.list">
-        <li :class="$style.listItem" v-for="(task, index) in store.tasksList" :key="task.id">
+      <TransitionGroup :class="$style.list" name="list" tag="ul">
+        <li :class="$style.listItem" v-for="(task) in store.preparedTasksList" :key="task.id">
           <TaskItem
             :task-data="task"
-            @complete="() => completeTask(index, task)"
+            @complete="() => completeTask(task)"
           />
         </li>
-      </ul>
+      </TransitionGroup>
     </div>
   </section>
 </template>
