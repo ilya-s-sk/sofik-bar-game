@@ -8,17 +8,29 @@ import { useStore } from '~/store';
 
 const store = useStore();
 
+useStore().$subscribe((_, state) => {
+  storageEntry.setUserData(state.userData);
+  storageEntry.setTasksList(state.tasksList);
+  storageEntry.setCurrentBarName(state.currentBarName);
+})
+
 const setUserData = (userData: IUserData) => {
   store.setUserData(userData);
   storageEntry.setUserData(userData);
 };
 
 onBeforeMount(() => {
-  const storedUserData = storageEntry.getUserData();
-  if (!storedUserData) {
-    return;
-  }
-  store.setUserData(storedUserData);
+  // Достаём данные, сохраненные в localStorage
+  const storedData: { data: unknown, field: keyof typeof store.$state }[] = [
+    { data: storageEntry.getUserData(), field: 'userData' },
+    { data: storageEntry.getTasksList(), field: 'tasksList' },
+    { data: storageEntry.getCurrentBarName(), field: 'currentBarName' },
+  ];
+  storedData.forEach(data => {
+    if (!data.data) return;
+
+    store[data.field] = data.data as any; // TODO fix
+  });
 })
 </script>
 

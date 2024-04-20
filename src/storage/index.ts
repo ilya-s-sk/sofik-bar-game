@@ -1,7 +1,9 @@
-import { IUserData } from "~/types";
+import { IUserData, ITaskEntity } from "~/types";
 
-const USER_DATA_LS_KEY = 'sofik-bar-game-user-data-ls-key';
-export const SHOW_TASKS_LS_KEY = 'sofik-bar-game-show-tasks-status'
+const USER_DATA_LS_KEY = 'sofik-bar-game-user-data';
+const TASKS_LIST_LS_KEY= 'sofik-bar-game-tasks-list';
+const CURRENT_BAR_LS_KEY = 'sofik-bar-game-current-bar-name';
+const SHOW_TASKS_LS_KEY = 'sofik-bar-game-show-tasks-status';
 
 class StorageEntry {
   setItem<T>(key: string, value: T) {
@@ -16,6 +18,18 @@ class StorageEntry {
     return localStorage.getItem(key);
   }
 
+  getJsonItem<T>(key: string): T | null {
+    const json = this.getItem(key);
+    if (!json) return null;
+
+    try {
+      const data = JSON.parse(json);
+      return data;
+    } catch {
+      return null;
+    }
+  }
+
   removeItem(key: string): void {
     localStorage.removeItem(key);
   }
@@ -24,18 +38,24 @@ class StorageEntry {
     this.setItem<IUserData>(USER_DATA_LS_KEY, userData);
   }
 
-  getUserData(): IUserData | null {
-    const userDataStr = this.getItem(USER_DATA_LS_KEY);
-    if (!userDataStr) {
-      return null;
-    }
+  getUserData() {
+    return this.getJsonItem<IUserData>(USER_DATA_LS_KEY);
+  }
 
-    try {
-      const userData = JSON.parse(userDataStr);
-      return userData
-    } catch {
-      return null;
-    }
+  setTasksList(tasksList: ITaskEntity[]) {
+    this.setItem<ITaskEntity[]>(TASKS_LIST_LS_KEY, tasksList);
+  }
+
+  getTasksList() {
+    return this.getJsonItem<ITaskEntity[]>(TASKS_LIST_LS_KEY);
+  }
+
+  setCurrentBarName(name: string) {
+    this.setItem(CURRENT_BAR_LS_KEY, name);
+  }
+
+  getCurrentBarName() {
+    return this.getItem(CURRENT_BAR_LS_KEY);
   }
 
   setTasksVisibilityStatus() {

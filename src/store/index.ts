@@ -23,6 +23,9 @@ export const useStore = defineStore('store', {
   getters: {
     hasUserData(): boolean {
       return this.userData.id > 0 && this.userData.name.length > 0;
+    },
+    hasGameData(): boolean {
+      return this.tasksList.length > 0 && Boolean(this.currentBarName);
     }
   },
   actions: {
@@ -32,6 +35,13 @@ export const useStore = defineStore('store', {
         ...userData,
       }
     },
-    
-  }
+    updateTaskByIndex(index: number, data: Partial<ITaskEntity>) {
+      if (index in this.tasksList) {
+        this.tasksList[index] = {
+          ...this.tasksList[index],
+          ...data,
+        }
+      }
+    }
+  },
 });

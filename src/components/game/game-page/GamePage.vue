@@ -25,7 +25,7 @@ onBeforeMount(() => {
 });
 
 onBeforeUnmount(() => {
-  storageEntry.removedTasksVisiblityStatus();
+  // storageEntry.removedTasksVisiblityStatus();
 })
 </script>
 
