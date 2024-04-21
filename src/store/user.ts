@@ -28,6 +28,8 @@ interface IState {
   userData: IUserData;
   currentBarName: string;
   tasksList: ITaskEntity[];
+
+  availableBars: unknown[];
 }
 
 export const useUserStore = defineStore('user', {
@@ -41,6 +43,8 @@ export const useUserStore = defineStore('user', {
     },
 
     currentBarName: '',
+
+    availableBars: [],
 
     tasksList: [],
   }),
@@ -115,6 +119,11 @@ export const useUserStore = defineStore('user', {
       if (this.isGameNotStarted) {
         dialogStore.showDialog('<h2>Всё еще ждём</h2>');
       }
+    },
+    async getAvailableBars() {
+      const response = await api.getAvailableBars(this.userData.id);
+      console.log(response);
+      this.availableBars = response;
     },
     async finishStage() {
       await api.finishStage(this.userData.id);

@@ -35,7 +35,11 @@ class Api {
   }
 
   async getUserData(id: number) {
-    return await this.fetch<ICurrentDataResponse>({ url: `user/current-data?id=${id}` })
+    return await this.fetch<ICurrentDataResponse>({ url: `user/get_current_data?id=${id}` })
+  }
+
+  async getAvailableBars(id: number) {
+    return await this.fetch({ url: `user/get_available_bars?player_id=${id}` });
   }
 
   async setTaskStatus(body: ISetTaskRequest) {
@@ -43,7 +47,7 @@ class Api {
   }
 
   async finishStage(id: number) {
-    return await this.fetch({ url: 'user/set-ready', method: 'POST', body: { userId: id } });
+    return await this.fetch({ url: 'user/visit-bar', method: 'POST', body: { userId: id } });
   }
 
   async sofikGetUsers() {

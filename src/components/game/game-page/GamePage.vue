@@ -7,7 +7,7 @@ import { ITaskEntity } from "~/types";
 import TaskItem from "./task-item/TaskItem.vue";
 import Actions from "./actions/Actions.vue";
 
-const store = useUserStore();
+const userStore = useUserStore();
 
 const showTasks = ref(false);
 
@@ -17,19 +17,20 @@ const openTasks = () => {
 };
 
 const completeTask = async (task: ITaskEntity) => {
-  store.userData.score += task.cost * (task.completed ? -1 : 1);
-  await store.updateTaskById(task.id, { completed: !task.completed});
+  userStore.userData.score += task.cost * (task.completed ? -1 : 1);
+  await userStore.updateTaskById(task.id, { completed: !task.completed});
 };
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
+  await userStore.getAvailableBars();
   showTasks.value = storageEntry.getTasksVisibilityStatus();
 });
 </script>
 
 <template>
   <section :class="$style.gamePage">
-    <h2 :class="$style.scoreTitle">Твои очки: {{ store.userData.score }}</h2>
-    <p>Тебе в этот бар: {{ store.currentBarName }}</p>
+    <h2 :class="$style.scoreTitle">Твои очки: {{ userStore.userData.score }}</h2>
+    <p>Тебе в этот бар: {{ userStore.currentBarName }}</p>
 
     <div v-if="!showTasks" :class="$style.showTasksBlock">
       <p>Когда дойдешь, можешь открыть задания</p>
@@ -40,7 +41,7 @@ onBeforeMount(() => {
       <div>
         <h2 :class="$style.tasksTitle">Твои задания:</h2>
         <TransitionGroup :class="$style.list" name="list" tag="ul">
-          <li :class="$style.listItem" v-for="(task) in store.preparedTasksList" :key="task.id">
+          <li :class="$style.listItem" v-for="(task) in userStore.preparedTasksList" :key="task.id">
             <TaskItem
               :task-data="task"
               @complete="() => completeTask(task)"

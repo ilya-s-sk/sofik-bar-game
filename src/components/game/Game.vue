@@ -11,7 +11,7 @@ const store = useUserStore();
 <template>
   <SofikPage v-if="store.userData.isSofik" />
   <template v-else>
-    <PreGame v-if="!store.hasGameData || store.isGameNotStarted" />
+    <PreGame v-if="(!store.hasGameData || store.isGameNotStarted)" />
     <GamePage v-else />
   </template>
 </template>
