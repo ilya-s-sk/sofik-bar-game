@@ -1,9 +1,10 @@
-import { IUserData, ITaskEntity } from "~/types";
+import { IUserData, ITaskEntity, IGameOptions } from "~/types";
 
 const USER_DATA_LS_KEY = 'sofik-bar-game-user-data';
 const TASKS_LIST_LS_KEY= 'sofik-bar-game-tasks-list';
 const CURRENT_BAR_LS_KEY = 'sofik-bar-game-current-bar-name';
 const SHOW_TASKS_LS_KEY = 'sofik-bar-game-show-tasks-status';
+const GAME_OPTIONS_LS_KEY = 'sofik-bar-game-game-options';
 
 class StorageEntry {
   setItem<T>(key: string, value: T) {
@@ -68,6 +69,14 @@ class StorageEntry {
 
   removedTasksVisiblityStatus() {
     this.removeItem(SHOW_TASKS_LS_KEY);
+  }
+
+  setGameOptions(gameOptions: IGameOptions) {
+    this.setItem(GAME_OPTIONS_LS_KEY, gameOptions);
+  }
+
+  getGameOptions() {
+    return this.getJsonItem<IGameOptions>(GAME_OPTIONS_LS_KEY);
   }
 }
 

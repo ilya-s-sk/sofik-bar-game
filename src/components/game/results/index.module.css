@@ -1,0 +1,39 @@
+.results {
+  width: 100%;
+}
+
+.title {
+  margin-bottom: 40px;
+  font-size: 40px;
+}
+
+.list {
+  counter-reset: results 0;
+}
+
+.item {
+  display: flex;
+  padding: 20px 0;
+
+  counter-increment: results 1;
+}
+
+.item::before {
+  content: counter(results)".";
+  font-size: 28px;
+  margin-right: 10px;
+}
+
+.item:not(:last-child) {
+  border-bottom: 1px solid var(--light-blue);
+}
+
+.name {
+  font-size: 28px;
+}
+
+.score {
+  margin-left: auto;
+  font-size: 28px;
+ font-style: italic;
+}

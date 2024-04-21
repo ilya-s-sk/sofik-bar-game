@@ -1,30 +1,20 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref } from "vue";
 import UIButton from "~/components/ui/button/UI-Button.vue";
 import { useUserStore } from "~/store/user";
-import { storageEntry } from "~/storage";
 import { ITaskEntity } from "~/types";
 import TaskItem from "./task-item/TaskItem.vue";
 import Actions from "./actions/Actions.vue";
 
 const userStore = useUserStore();
 
-const showTasks = ref(false);
-
 const openTasks = () => {
-  showTasks.value = true;
-  storageEntry.setTasksVisibilityStatus();
+  userStore.gameOptions.showTasks = true;
 };
 
 const completeTask = async (task: ITaskEntity) => {
   userStore.userData.score += task.cost * (task.completed ? -1 : 1);
   await userStore.updateTaskById(task.id, { completed: !task.completed});
 };
-
-onBeforeMount(async () => {
-  await userStore.getAvailableBars();
-  showTasks.value = storageEntry.getTasksVisibilityStatus();
-});
 </script>
 
 <template>
@@ -32,7 +22,7 @@ onBeforeMount(async () => {
     <h2 :class="$style.scoreTitle">Твои очки: {{ userStore.userData.score }}</h2>
     <p>Тебе в этот бар: {{ userStore.currentBarName }}</p>
 
-    <div v-if="!showTasks" :class="$style.showTasksBlock">
+    <div v-if="!userStore.gameOptions.showTasks" :class="$style.showTasksBlock">
       <p>Когда дойдешь, можешь открыть задания</p>
       <UIButton @click="openTasks">Я на месте</UIButton>
     </div>

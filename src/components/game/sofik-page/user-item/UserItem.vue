@@ -16,7 +16,7 @@ const emit = defineEmits<{
 const currentScoreAmount = ref(1);
 
 const changeUserScore = (increase: boolean) => {
-  emit('change-user-score', { amount: currentScoreAmount.value, increase });
+  emit('change-user-score', { amount: currentScoreAmount.value * (increase ? 1 : -1) });
 }
 
 </script>
@@ -30,12 +30,16 @@ const changeUserScore = (increase: boolean) => {
     <div :class="$style.controls">
       <label :class="$style.options">
         <span>Изменить счет на:</span>
-        <input
-          v-model="currentScoreAmount"
-          :class="$style.input"
-          type="number"
-          inputmode="numeric"
-        >
+        <div :class="$style.inputBlock">
+          <button :class="$style.changeAmountBtn" type="button" @click="() => currentScoreAmount--"><span>-</span></button>
+          <input
+            v-model="currentScoreAmount"
+            :class="$style.input"
+            type="number"
+            inputmode="numeric"
+          >
+          <button :class="$style.changeAmountBtn" type="button" @click="() => currentScoreAmount++"><span>+</span></button>
+        </div>
       </label>
       <div :class="$style.actions">
         <UIButton :disabled="pending" @click="() => changeUserScore(true)">Увеличить</UIButton>

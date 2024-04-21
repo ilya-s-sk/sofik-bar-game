@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { api } from '~/api';
 import { ILoginBody } from "~/api/types";
 import { CODES } from "~/api/consts";
-import { ITaskEntity, IUserData } from "~/types";
+import { IGameOptions, ITaskEntity, IUserData } from "~/types";
 import { useDialogStore } from "./dialog";
 import { storageEntry } from "~/storage";
 
@@ -28,8 +28,7 @@ interface IState {
   userData: IUserData;
   currentBarName: string;
   tasksList: ITaskEntity[];
-
-  availableBars: unknown[];
+  gameOptions: IGameOptions;
 }
 
 export const useUserStore = defineStore('user', {
@@ -39,12 +38,14 @@ export const useUserStore = defineStore('user', {
       name: '',
       isSofik: false,
       score: 0,
-      preparedToNextStage: false,
+      isReady: false,
+    },
+
+    gameOptions: {
+      showTasks: false,
     },
 
     currentBarName: '',
-
-    availableBars: [],
 
     tasksList: [],
   }),
@@ -109,6 +110,8 @@ export const useUserStore = defineStore('user', {
       this.userData = {
         ...this.userData,
         ...userData,
+        isSofik: Boolean(userData.isSofik),
+        isReady: Boolean(userData.is_ready),
       };
     },
     async startGame() {
@@ -118,18 +121,37 @@ export const useUserStore = defineStore('user', {
 
       if (this.isGameNotStarted) {
         dialogStore.showDialog('<h2>Всё еще ждём</h2>');
-      }
-    },
-    async getAvailableBars() {
-      const response = await api.getAvailableBars(this.userData.id);
-      console.log(response);
-      this.availableBars = response;
+      };
     },
     async finishStage() {
-      await api.finishStage(this.userData.id);
+      const doalogStore = useDialogStore();
+      const response = await api.finishStage(this.userData.id);
+
+      if (!response || ![CODES.SUCCESS, CODES.BAR_ALREADY_VISITED].includes(response.code)) {
+        doalogStore.showDialog(`<p>
+          Что-то пошло не так<br>
+          Попробуй ещё раз позже<br>
+          Ошибка: ${response?.result}
+        </p>`);
+        return;
+      }
+
+      this.userData.isReady = true;
     },
     async changeStage() {
-      storageEntry.removedTasksVisiblityStatus();
+      const doalogStore = useDialogStore();
+      const response = await api.goNextStage(this.userData.id);
+
+      if (!response || response.code === CODES.PLAYERS_ARE_NOT_READY) {
+        doalogStore.showDialog(`<p>
+          Ещё не все игроки готовы<br>
+          Ждём<br>
+          ${response?.result}
+        </p>`);
+        return;
+      }
+
+      this.gameOptions.showTasks = false;
     }
   },
 });

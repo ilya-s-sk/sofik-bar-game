@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { api } from '~/api'
 import { IUserData } from "~/api/types";
 import { IChangeScoreOptions } from "~/types";
+import { useDialogStore } from "./dialog";
 
 interface IState {
   users: IUserData[],
@@ -33,18 +34,26 @@ export const useSofikStore = defineStore('sofik', {
       this.users = users;
     },
     async changeUserScore(id: number, options: IChangeScoreOptions) {
+      const doalogStore = useDialogStore();
       const userIndex = this.users.findIndex(user => user.id === id);
 
       if (userIndex === -1) return;
 
       const user = this.users[userIndex];
-      const newScore = options.increase ? user.score + options.amount : user.score - options.amount;
+      const response = await api.sofikSetScore({ userId: id, count: options.amount });
 
-      await api.sofikSetScore({ id, count: newScore });
+      if (!response || !response.count) {
+        doalogStore.showDialog(`<p>
+          Что-то пошло не так<br>
+          Попробуй ещё раз позже<br>
+          Ошибка: ${response?.result}
+        </p>`);
+        return;
+      }
 
       this.users[userIndex] = {
         ...user,
-        score: newScore
+        score: response.count
       };
     }
   }

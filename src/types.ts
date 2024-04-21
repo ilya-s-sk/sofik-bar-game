@@ -9,7 +9,7 @@ export interface IUserData {
   name: string;
   isSofik: boolean;
   score: number;
-  preparedToNextStage: boolean;
+  isReady: boolean;
   stage?: 'beforeGame' | 'game' | 'afterGame',
 }
 
@@ -22,5 +22,8 @@ export interface ITaskEntity {
 
 export interface IChangeScoreOptions {
   amount: number;
-  increase: boolean;
+}
+
+export interface IGameOptions {
+  showTasks: boolean;
 }

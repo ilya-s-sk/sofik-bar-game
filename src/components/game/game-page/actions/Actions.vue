@@ -23,13 +23,13 @@ const changeStage = async () => {
 <template>
   <div :class="$style.actions">
     <UIButton
+      :disabled="store.userData.isReady"
+      :loading="!store.userData.isReady && pending"
       @click="finishStage"
-      :disabled="store.userData.preparedToNextStage"
-      :loading="!store.userData.preparedToNextStage && pending"
     >Я тут всё</UIButton>
     <UIButton 
-      :disabled="!store.userData.preparedToNextStage"
-      :loading="store.userData.preparedToNextStage && pending"
+      :disabled="!store.userData.isReady"
+      :loading="store.userData.isReady && pending"
       @click="changeStage"
     >Пойдем дальше</UIButton>
   </div>

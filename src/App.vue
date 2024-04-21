@@ -13,6 +13,7 @@ const dialogStore = useDialogStore();
 useUserStore().$subscribe((_, state) => {
   [
     { state: state.userData, action: storageEntry.setUserData.bind(storageEntry) },
+    { state: state.gameOptions, action: storageEntry.setGameOptions.bind(storageEntry) },
     { state: state.tasksList, action: storageEntry.setTasksList.bind(storageEntry) },
     { state: state.currentBarName, action: storageEntry.setCurrentBarName.bind(storageEntry) },
   ].forEach(item => {
@@ -26,6 +27,7 @@ onBeforeMount(() => {
     { data: storageEntry.getUserData(), field: 'userData' },
     { data: storageEntry.getTasksList(), field: 'tasksList' },
     { data: storageEntry.getCurrentBarName(), field: 'currentBarName' },
+    { data: storageEntry.getGameOptions(), field: 'gameOptions' },
   ];
   storedData.forEach(data => {
     if (!data.data) return;

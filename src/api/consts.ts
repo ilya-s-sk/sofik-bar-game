@@ -1,3 +1,6 @@
-export const CODES = {
-  ERROR: -100,
-} as const;
+export enum CODES {
+  SUCCESS = 0,
+  ERROR = -100,
+  BAR_ALREADY_VISITED = -101,
+  PLAYERS_ARE_NOT_READY = -300,
+};

@@ -26,20 +26,22 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div :class="$style.header">
-    <p>Софик, с днём рождения! <span :class="$style.heart">💙</span></p>
-    <button :class="$style.refresh" aria-label="Обновить" @click="update"><RefreshIcon /></button>
-  </div>
-  <h1 :class="$style.title">Игроки:</h1>
-  <ul :class="$style.list">
-    <li v-for="user in sofikStore.users" :key="user.id" :class="$style.listItem">
-      <UserItem
-        :user-data="user"
-        :pending="isPending"
-        @change-user-score="(opt) => changeUserScore(user.id, opt)" 
-      />
-    </li>
-  </ul>
+  <section :class="$style.sofikPage">
+    <div :class="$style.header">
+      <p>Софик, с днём рождения! <span :class="$style.heart">💙</span></p>
+      <button :class="$style.refresh" aria-label="Обновить" @click="update"><RefreshIcon /></button>
+    </div>
+    <h1 :class="$style.title">Игроки:</h1>
+    <ul :class="$style.list">
+      <li v-for="user in sofikStore.users" :key="user.id" :class="$style.listItem">
+        <UserItem
+          :user-data="user"
+          :pending="isPending"
+          @change-user-score="(opt) => changeUserScore(user.id, opt)" 
+        />
+      </li>
+    </ul>
+  </section>
 </template>
 
 <style lang="css" src="./index.module.css" module></style>
