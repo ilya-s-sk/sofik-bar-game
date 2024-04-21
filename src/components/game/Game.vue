@@ -9,9 +9,9 @@ const store = useUserStore();
 </script>
 
 <template>
-  <SofikPage v-if="true" />
+  <SofikPage v-if="store.userData.isSofik" />
   <template v-else>
-    <GamePage v-if="store.hasGameData" />
-    <PreGame v-else />
+    <PreGame v-if="!store.hasGameData || store.isGameNotStarted" />
+    <GamePage v-else />
   </template>
 </template>

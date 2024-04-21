@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { api } from "~/api";
 import UIButton from "~/components/ui/button/UI-Button.vue";
+import { useUserStore } from "~/store/user";
+
+const userStore = useUserStore();
 
 const isPending = ref(false);
 
 const checkIsGameReady = async () => {
   isPending.value = true;
-  await api.startGame();
+  await userStore.startGame();
   isPending.value = false;
 };
 </script>

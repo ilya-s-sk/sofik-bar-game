@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, onBeforeUnmount, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import UIButton from "~/components/ui/button/UI-Button.vue";
 import { useUserStore } from "~/store/user";
 import { storageEntry } from "~/storage";
@@ -16,18 +16,14 @@ const openTasks = () => {
   storageEntry.setTasksVisibilityStatus();
 };
 
-const completeTask = (task: ITaskEntity) => {
+const completeTask = async (task: ITaskEntity) => {
   store.userData.score += task.cost * (task.completed ? -1 : 1);
-  store.updateTaskById(task.id, { completed: !task.completed});
+  await store.updateTaskById(task.id, { completed: !task.completed});
 };
 
 onBeforeMount(() => {
   showTasks.value = storageEntry.getTasksVisibilityStatus();
 });
-
-onBeforeUnmount(() => {
-  // storageEntry.removedTasksVisiblityStatus();
-})
 </script>
 
 <template>

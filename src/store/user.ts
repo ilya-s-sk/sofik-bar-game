@@ -4,6 +4,25 @@ import { ILoginBody } from "~/api/types";
 import { CODES } from "~/api/consts";
 import { ITaskEntity, IUserData } from "~/types";
 import { useDialogStore } from "./dialog";
+import { storageEntry } from "~/storage";
+
+const MOCK_TASKS_DATA = {
+  currentBarName: 'Лучший бар в мире',
+  tasksList: [
+    {
+      id: 0,
+      title: 'Задание 1',
+      cost: 10,
+      completed: false,
+    },
+    {
+      id: 1,
+      title: 'Задание 2',
+      cost: 8,
+      completed: false,
+    },
+  ]
+}
 
 interface IState {
   userData: IUserData;
@@ -36,6 +55,9 @@ export const useUserStore = defineStore('user', {
       return state.tasksList.filter(t => !t.completed).concat(
         state.tasksList.filter(t => t.completed)
       )
+    },
+    isGameNotStarted(state) {
+      return state.userData.stage !== 'game';
     }
   },
   actions: {
@@ -45,15 +67,20 @@ export const useUserStore = defineStore('user', {
         ...userData,
       }
     },
-    updateTaskById(id: number, data: Partial<ITaskEntity>) {
+
+    async updateTaskById(id: number, data: Partial<ITaskEntity>) {
       const taskIndex = this.tasksList.findIndex(t => t.id === id);
-      if (taskIndex !== -1) {
-        this.tasksList[taskIndex] = {
-          ...this.tasksList[taskIndex],
-          ...data,
-        }
-      }
+
+      if (taskIndex === -1) return;
+
+      await api.setTaskStatus({ userId: this.userData.id, taskId: id, completed: data.completed! })
+
+      this.tasksList[taskIndex] = {
+        ...this.tasksList[taskIndex],
+        ...data,
+      };
     },
+
     async login(data: ILoginBody) {
       const dialogStore = useDialogStore();
 
@@ -67,6 +94,33 @@ export const useUserStore = defineStore('user', {
       }
   
       this.setUserData({ id: result.id, name: data.login, });
+    },
+    async getUserData() {
+      const response = await api.getUserData(this.userData.id);
+
+      if (!response) return;
+
+      const { data, ...userData } = response
+
+      this.userData = {
+        ...this.userData,
+        ...userData,
+      };
+    },
+    async startGame() {
+      const dialogStore = useDialogStore();
+
+      await this.getUserData();
+
+      if (this.isGameNotStarted) {
+        dialogStore.showDialog('<h2>Всё еще ждём</h2>');
+      }
+    },
+    async finishStage() {
+      await api.finishStage(this.userData.id);
+    },
+    async changeStage() {
+      storageEntry.removedTasksVisiblityStatus();
     }
   },
 });

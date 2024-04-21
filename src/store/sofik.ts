@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { api } from '~/api'
 import { IUserData } from "~/api/types";
+import { IChangeScoreOptions } from "~/types";
 
 interface IState {
   users: IUserData[],
@@ -30,6 +31,21 @@ export const useSofikStore = defineStore('sofik', {
         return;
       }
       this.users = users;
+    },
+    async changeUserScore(id: number, options: IChangeScoreOptions) {
+      const userIndex = this.users.findIndex(user => user.id === id);
+
+      if (userIndex === -1) return;
+
+      const user = this.users[userIndex];
+      const newScore = options.increase ? user.score + options.amount : user.score - options.amount;
+
+      await api.sofikSetScore({ id, count: newScore });
+
+      this.users[userIndex] = {
+        ...user,
+        score: newScore
+      };
     }
   }
 });

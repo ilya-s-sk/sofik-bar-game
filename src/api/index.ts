@@ -1,24 +1,5 @@
 import { useDialogStore } from "~/store/dialog";
-import { useUserStore } from '~/store/user';
-import { ICurrentDataResponse, IFetchOptions, ILoginBody, IUserData, ILoginResponse, ISetScoreRequest } from './types'
-
-const MOCK_TASKS_DATA = {
-  currentBarName: 'Лучший бар в мире',
-  tasksList: [
-    {
-      id: 0,
-      title: 'Задание 1',
-      cost: 10,
-      completed: false,
-    },
-    {
-      id: 1,
-      title: 'Задание 2',
-      cost: 8,
-      completed: false,
-    },
-  ]
-}
+import { ICurrentDataResponse, IFetchOptions, ILoginBody, IUserData, ILoginResponse, ISetScoreRequest, ISetTaskRequest } from './types'
 
 const BASE_URL = 'http://sofiqgame.dlyamegaturboultrakachkov.keenetic.link:80/api';
 
@@ -57,26 +38,13 @@ class Api {
     return await this.fetch<ICurrentDataResponse>({ url: `user/current-data?id=${id}` })
   }
 
-  async startGame() {
-    const store = useUserStore();
-    const dialogStore = useDialogStore();
-
-    // имитация запроса
-    const result: { tasksList: any[], currentBarName: string, } = await new Promise(resolve => {
-      setTimeout(() => {
-        resolve(MOCK_TASKS_DATA)
-      }, 1000)
-    });
-
-    if (!result.tasksList.length) {
-      dialogStore.showDialog('<h2>Всё еще ждём</h2>');
-      return;
-    }
-
-    store.$patch(result);
+  async setTaskStatus(body: ISetTaskRequest) {
+    return await this.fetch({ url: `user/set-task`, method: 'POST', body })
   }
 
-  async setTaskStatus() {}
+  async finishStage(id: number) {
+    return await this.fetch({ url: 'user/set-ready', method: 'POST', body: { userId: id } });
+  }
 
   async sofikGetUsers() {
     return this.fetch<IUserData[]>({ url: 'sofik/get-users', });

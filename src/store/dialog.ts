@@ -23,7 +23,8 @@ export const useDialogStore = defineStore('dialog', {
     showErrorDialog(error: unknown) {
       this.isShow = true;
       this.isErrorShow = true;
-      this.errorContent = JSON.stringify(error);
+      const errorData = error instanceof Error ? { name: error.name, msg: error.message } : error;
+      this.errorContent = JSON.stringify(errorData);
     },
     closeDialog() {
       this.$reset();

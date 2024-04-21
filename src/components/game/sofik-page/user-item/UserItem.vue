@@ -2,12 +2,23 @@
 import { ref } from 'vue';
 import { IUserData } from '~/api/types';
 import UIButton from '~/components/ui/button/UI-Button.vue';
-
-const currentScoreAmount = ref(1);
+import { IChangeScoreOptions } from '~/types';
 
 defineProps<{
   userData: IUserData;
+  pending: boolean;
 }>();
+
+const emit = defineEmits<{
+  (e: 'change-user-score', options: IChangeScoreOptions): void,
+}>()
+
+const currentScoreAmount = ref(1);
+
+const changeUserScore = (increase: boolean) => {
+  emit('change-user-score', { amount: currentScoreAmount.value, increase });
+}
+
 </script>
 
 <template>
@@ -27,8 +38,8 @@ defineProps<{
         >
       </label>
       <div :class="$style.actions">
-        <UIButton>Увеличить</UIButton>
-        <UIButton theme="red">Уменьшить</UIButton>
+        <UIButton :disabled="pending" @click="() => changeUserScore(true)">Увеличить</UIButton>
+        <UIButton :disabled="pending" theme="red" @click="() => changeUserScore(false)">Уменьшить</UIButton>
       </div>
     </div>
   </div>

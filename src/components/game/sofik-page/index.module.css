@@ -1,3 +1,22 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.refresh {
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  color: #fff;
+  background-color: var(--blue);
+  transition: transform 0.3s ease;
+}
+
+.refresh:active {
+  transform: scale(0.9);
+}
+
 .title {
   margin: 20px 0;
 }

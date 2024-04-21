@@ -37,3 +37,9 @@ export interface ISetScoreRequest {
   id: number;
   count: number;
 }
+
+export interface ISetTaskRequest {
+  userId: number;
+  taskId: number;
+  completed: boolean;
+}
