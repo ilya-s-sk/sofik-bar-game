@@ -2,13 +2,15 @@
 import { onBeforeMount } from "vue";
 import Login from "~/components/login/Login.vue";
 import Game from '~/components/game/Game.vue';
-import { IUserData } from "~/types";
+import UIDialog from "./components/ui/dialog/UI-Dialog.vue";
 import { storageEntry } from "~/storage";
-import { useStore } from '~/store';
+import { useUserStore } from '~/store/user';
+import { useDialogStore } from '~/store/dialog';
 
-const store = useStore();
+const store = useUserStore();
+const dialogStore = useDialogStore();
 
-useStore().$subscribe((_, state) => {
+useUserStore().$subscribe((_, state) => {
   [
     { state: state.userData, action: storageEntry.setUserData.bind(storageEntry) },
     { state: state.tasksList, action: storageEntry.setTasksList.bind(storageEntry) },
@@ -16,11 +18,7 @@ useStore().$subscribe((_, state) => {
   ].forEach(item => {
     item.action(item.state as any) // TODO fix type
   });
-})
-
-const setUserData = (userData: IUserData) => {
-  store.setUserData(userData);
-};
+});
 
 onBeforeMount(() => {
   // Достаём данные, сохраненные в localStorage
@@ -39,8 +37,17 @@ onBeforeMount(() => {
 
 <template>
   <main :class="$style.main">
-    <Login v-if="!store.hasUserData" @set-user-data="setUserData" />
+    <Login v-if="!store.hasUserData" />
     <Game v-else />
+
+    <UIDialog
+      :is-show="dialogStore.isShow"
+      :show-error="dialogStore.isErrorShow"
+      :error-text="dialogStore.errorContent"
+      @close="() => dialogStore.closeDialog()"
+    >
+      <div v-html="dialogStore.content"></div>
+    </UIDialog>
   </main>
 </template>
 

@@ -38,7 +38,7 @@ watch(props, (newValue) => {
           <span>У нас что-то сломалось</span>
         </h2>
         <template v-if="errorText">
-          <p>Покажите эти странные буквы знающим людям:</p>
+          <p>И вот почему:</p>
           <p>{{ errorText }}</p>
         </template>
         <template v-else>

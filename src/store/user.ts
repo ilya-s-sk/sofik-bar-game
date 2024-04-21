@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
+import { api } from '~/api';
+import { ILoginBody } from "~/api/types";
+import { CODES } from "~/api/consts";
 import { ITaskEntity, IUserData } from "~/types";
+import { useDialogStore } from "./dialog";
 
 interface IState {
   userData: IUserData;
@@ -7,13 +11,14 @@ interface IState {
   tasksList: ITaskEntity[];
 }
 
-export const useStore = defineStore('store', {
+export const useUserStore = defineStore('user', {
   state: (): IState => ({
     userData: {
       id: -1,
       name: '',
       isSofik: false,
       score: 0,
+      preparedToNextStage: false,
     },
 
     currentBarName: '',
@@ -48,6 +53,20 @@ export const useStore = defineStore('store', {
           ...data,
         }
       }
+    },
+    async login(data: ILoginBody) {
+      const dialogStore = useDialogStore();
+
+      const result = await api.login(data);
+
+      if (!result) return;
+
+      if (!result.id || typeof result.id !== 'number' || result.code === CODES.ERROR) {
+        dialogStore.showDialog('<h2>Перепроверь имя и пароль</h2>');
+        return;
+      }
+  
+      this.setUserData({ id: result.id, name: data.login, });
     }
   },
 });

@@ -1,0 +1,33 @@
+.title {
+  margin: 20px 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.listItem {
+  padding: 20px 0;
+}
+
+.listItem:not(:last-child) {
+  border-bottom: 1px solid var(--light-blue);
+}
+
+.heart {
+  display: inline-block;
+  animation: 2.5s heart-animation infinite;
+}
+
+@keyframes heart-animation {
+  0% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

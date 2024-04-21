@@ -9,6 +9,7 @@ export interface IUserData {
   name: string;
   isSofik: boolean;
   score: number;
+  preparedToNextStage: boolean;
 }
 
 export interface ITaskEntity {

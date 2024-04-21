@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 import UIButton from "~/components/ui/button/UI-Button.vue";
-import { useStore } from "~/store";
+import { useUserStore } from "~/store/user";
 import { storageEntry } from "~/storage";
 import { ITaskEntity } from "~/types";
 import TaskItem from "./task-item/TaskItem.vue";
+import Actions from "./actions/Actions.vue";
 
-const store = useStore();
+const store = useUserStore();
 
 const showTasks = ref(false);
 
@@ -30,7 +31,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section>
+  <section :class="$style.gamePage">
     <h2 :class="$style.scoreTitle">Твои очки: {{ store.userData.score }}</h2>
     <p>Тебе в этот бар: {{ store.currentBarName }}</p>
 
@@ -39,17 +40,21 @@ onBeforeUnmount(() => {
       <UIButton @click="openTasks">Я на месте</UIButton>
     </div>
 
-    <div v-else>
-      <h2 :class="$style.tasksTitle">Твои задания:</h2>
-      <TransitionGroup :class="$style.list" name="list" tag="ul">
-        <li :class="$style.listItem" v-for="(task) in store.preparedTasksList" :key="task.id">
-          <TaskItem
-            :task-data="task"
-            @complete="() => completeTask(task)"
-          />
-        </li>
-      </TransitionGroup>
-    </div>
+    <template v-else>
+      <div>
+        <h2 :class="$style.tasksTitle">Твои задания:</h2>
+        <TransitionGroup :class="$style.list" name="list" tag="ul">
+          <li :class="$style.listItem" v-for="(task) in store.preparedTasksList" :key="task.id">
+            <TaskItem
+              :task-data="task"
+              @complete="() => completeTask(task)"
+            />
+          </li>
+        </TransitionGroup>
+      </div>
+  
+      <Actions />
+    </template>
   </section>
 </template>
 

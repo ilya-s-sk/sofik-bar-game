@@ -3,12 +3,11 @@ import { ref, reactive, computed } from "vue";
 import Button from "~/components/ui/button/UI-Button.vue";
 import Dialog from "~/components/ui/dialog/UI-Dialog.vue";
 import Info from "~/components/ui/icons/InfoIcon.vue";
-import { ILoginField, IUserData } from "~/types";
+import { ILoginField } from "~/types";
+import { useUserStore } from '~/store/user';
 import { loginRegExp, passErrorText, loginErrorText } from "./consts";
 
-const emit = defineEmits<{
-  (e: "set-user-data", data: IUserData): void;
-}>();
+const store = useUserStore();
 
 const isPending = ref(false);
 const isPassVisible = ref(false);
@@ -60,26 +59,13 @@ const handleSubmit = async (event: Event) => {
 
   isPending.value = true;
 
-  const pr = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, 1000);
-  });
-
-  try {
-    await pr;
-    const userData = {
-      id: Date.now(),
-      name: login.value,
-      isSofik: false,
-      score: 0,
-    };
-    emit("set-user-data", userData);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    isPending.value = false;
-  }
+  const data = {
+    login: login.value,
+    password: password.value,
+  };
+  await store.login(data);
+  
+  isPending.value = false;
 };
 </script>
 
@@ -144,10 +130,7 @@ const handleSubmit = async (event: Event) => {
           </button>
         </div>
       </label>
-      <Button
-        :class="$style.button"
-        :loading="isPending"
-        :disabled="isPending"
+      <Button :class="$style.button" :loading="isPending" :disabled="isPending"
         >Войти</Button
       >
     </form>
