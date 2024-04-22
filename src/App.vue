@@ -10,17 +10,6 @@ import { useDialogStore } from '~/store/dialog';
 const store = useUserStore();
 const dialogStore = useDialogStore();
 
-useUserStore().$subscribe((_, state) => {
-  [
-    { state: state.userData, action: storageEntry.setUserData.bind(storageEntry) },
-    { state: state.gameOptions, action: storageEntry.setGameOptions.bind(storageEntry) },
-    { state: state.tasksList, action: storageEntry.setTasksList.bind(storageEntry) },
-    { state: state.currentBarName, action: storageEntry.setCurrentBarName.bind(storageEntry) },
-  ].forEach(item => {
-    item.action(item.state as any) // TODO fix type
-  });
-});
-
 onBeforeMount(() => {
   // Достаём данные, сохраненные в localStorage
   const storedData: { data: unknown, field: keyof typeof store.$state }[] = [
@@ -34,6 +23,17 @@ onBeforeMount(() => {
 
     store[data.field] = data.data as any; // TODO fix type
   });
+
+  useUserStore().$subscribe((_, state) => {
+  [
+    { state: state.userData, action: storageEntry.setUserData.bind(storageEntry) },
+    { state: state.gameOptions, action: storageEntry.setGameOptions.bind(storageEntry) },
+    { state: state.tasksList, action: storageEntry.setTasksList.bind(storageEntry) },
+    { state: state.currentBarName, action: storageEntry.setCurrentBarName.bind(storageEntry) },
+  ].forEach(item => {
+    item.action(item.state as any) // TODO fix type
+  });
+});
 })
 </script>
 
