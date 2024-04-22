@@ -4,16 +4,19 @@ import { useUserStore } from "~/store/user";
 import { ITaskEntity } from "~/types";
 import TaskItem from "./task-item/TaskItem.vue";
 import Actions from "./actions/Actions.vue";
+import { Ref, ref } from "vue";
 
 const userStore = useUserStore();
+const pendingTaskId: Ref<number|null> = ref(null);
 
 const openTasks = () => {
   userStore.gameOptions.showTasks = true;
 };
 
 const completeTask = async (task: ITaskEntity) => {
-  userStore.userData.score += task.cost * (task.completed ? -1 : 1);
-  await userStore.updateTaskById(task.id, { completed: !task.completed});
+  pendingTaskId.value = task.id;
+  await userStore.updateTaskById(task.id, { completed: !task.completed });
+  pendingTaskId.value = null;
 };
 </script>
 
@@ -34,6 +37,7 @@ const completeTask = async (task: ITaskEntity) => {
           <li :class="$style.listItem" v-for="(task) in userStore.preparedTasksList" :key="task.id">
             <TaskItem
               :task-data="task"
+              :pending="pendingTaskId === task.id"
               @complete="() => completeTask(task)"
             />
           </li>

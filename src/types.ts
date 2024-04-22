@@ -16,6 +16,7 @@ export interface IUserData {
 export interface ITaskEntity {
   id: number;
   title: string;
+  desc: string;
   cost: number;
   completed: boolean;
 }

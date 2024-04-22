@@ -1,5 +1,16 @@
 import { useDialogStore } from "~/store/dialog";
-import { ICurrentDataResponse, IFetchOptions, ILoginBody, IUserData, ILoginResponse, ISetScoreRequest, ISetTaskRequest, ISetScoreResponse, IVisitBarResponse, IGoNextStageResponse } from './types'
+import { 
+  ICurrentDataResponse, 
+  IFetchOptions, ILoginBody, 
+  IUserData, 
+  ILoginResponse, 
+  ISetScoreRequest, 
+  ISetTaskRequest, 
+  ISetScoreResponse, 
+  IVisitBarResponse, 
+  IChangeStageResponse, 
+  ISetTaaskResponse
+} from './types'
 
 const BASE_URL = 'http://sofiqgame.dlyamegaturboultrakachkov.keenetic.link:80/api';
 
@@ -15,16 +26,16 @@ class Api {
         method,
         body: bodyJson,
       });
-      
+
       if (!response.ok) {
-        const {status, statusText} = response
+        const { status, statusText } = response
         throw { status, statusText }
       }
 
       const result = await response.json();
 
       return result;
-    } catch(err) {
+    } catch (err) {
       dialogStore.showErrorDialog(err);
       return null;
     }
@@ -39,15 +50,15 @@ class Api {
   }
 
   async setTaskStatus(body: ISetTaskRequest) {
-    return await this.fetch({ url: `user/set-task`, method: 'POST', body })
+    return await this.fetch<ISetTaaskResponse>({ url: `user/set-task`, method: 'POST', body })
   }
 
   async finishStage(id: number) {
-    return await this.fetch<IVisitBarResponse>({ url: 'user/visit_bar', method: 'POST', body: { player_id: id, bar_id: 2, } });
+    return await this.fetch<IVisitBarResponse>({ url: 'user/go_next', method: 'POST', body: { player_id: id } });
   }
 
-  async goNextStage(id: number) {
-    return await this.fetch<IGoNextStageResponse>({ url: 'user/go_next', method: 'POST', body: { player_id: id }});
+  async changeStage(id: number) {
+    return await this.fetch<IChangeStageResponse>({ url: 'user/visit_bar', method: 'POST', body: { player_id: id } });
   }
 
   async sofikGetUsers() {

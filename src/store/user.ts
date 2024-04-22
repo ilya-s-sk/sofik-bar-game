@@ -78,8 +78,19 @@ export const useUserStore = defineStore('user', {
 
       if (taskIndex === -1) return;
 
-      await api.setTaskStatus({ userId: this.userData.id, taskId: id, completed: data.completed! })
+      const response = await api.setTaskStatus({ 
+        userId: this.userData.id, 
+        taskId: id, 
+        completed: data.completed! 
+      });
 
+      if (!response || response.code !== CODES.SUCCESS) {
+        return;
+      }
+
+      const task = this.tasksList[taskIndex];
+
+      this.userData.score += task.cost * (data.completed ? -1 : 1);
       this.tasksList[taskIndex] = {
         ...this.tasksList[taskIndex],
         ...data,
@@ -103,9 +114,15 @@ export const useUserStore = defineStore('user', {
     async getUserData() {
       const response = await api.getUserData(this.userData.id);
 
-      if (!response) return;
+      if (!response) {
+        this.showDialogWithMessage(`<p>
+          Что-то пошло не так<br>
+          Попробуй ещё раз позже
+        </p>`);
+        return
+      };
 
-      const { data, ...userData } = response
+      const { data, ...userData } = response;
 
       this.userData = {
         ...this.userData,
@@ -113,22 +130,27 @@ export const useUserStore = defineStore('user', {
         isSofik: Boolean(userData.isSofik),
         isReady: Boolean(userData.is_ready),
       };
+
+      this.tasksList = (data.tasks || []).map(({ id, name, desc, cost, is_completed }) => ({
+        id,
+        title: name,
+        desc,
+        cost: cost,
+        completed: Boolean(is_completed)
+      }))
     },
     async startGame() {
-      const dialogStore = useDialogStore();
-
       await this.getUserData();
 
       if (this.isGameNotStarted) {
-        dialogStore.showDialog('<h2>Всё еще ждём</h2>');
+        this.showDialogWithMessage('<h2>Всё еще ждём</h2>');
       };
     },
     async finishStage() {
-      const doalogStore = useDialogStore();
       const response = await api.finishStage(this.userData.id);
 
-      if (!response || ![CODES.SUCCESS, CODES.BAR_ALREADY_VISITED].includes(response.code)) {
-        doalogStore.showDialog(`<p>
+      if (!response || response.code !== CODES.SUCCESS) {
+        this.showDialogWithMessage(`<p>
           Что-то пошло не так<br>
           Попробуй ещё раз позже<br>
           Ошибка: ${response?.result}
@@ -139,19 +161,23 @@ export const useUserStore = defineStore('user', {
       this.userData.isReady = true;
     },
     async changeStage() {
-      const doalogStore = useDialogStore();
-      const response = await api.goNextStage(this.userData.id);
+      const response = await api.changeStage(this.userData.id);
 
       if (!response || response.code === CODES.PLAYERS_ARE_NOT_READY) {
-        doalogStore.showDialog(`<p>
+        this.showDialogWithMessage(`<p>
           Ещё не все игроки готовы<br>
-          Ждём<br>
+          Покричите на них в чате<br>
           ${response?.result}
         </p>`);
         return;
       }
 
       this.gameOptions.showTasks = false;
+      await this.getUserData();
+    },
+    showDialogWithMessage(message: string) {
+      const dialogStore = useDialogStore();
+      dialogStore.showDialog(message);
     }
   },
 });

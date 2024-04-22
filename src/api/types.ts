@@ -1,4 +1,4 @@
-import { CODES } from "./consts";
+import { CODES } from './consts';
 
 export interface IFetchOptions {
   url: string;
@@ -30,9 +30,16 @@ export interface ICurrentDataResponse {
   isSofik: boolean;
   is_ready: boolean;
   data: {
-    tasks?: {}[],
-    result?: {}[],
+    tasks?: ITaskEntityFromCurrentData[],
   }
+}
+
+export interface ITaskEntityFromCurrentData {
+  id: number,
+  name: string,
+  desc: string,
+  cost: number,
+  is_completed: 0 | 1,
 }
 
 export interface ISetScoreRequest {
@@ -53,13 +60,18 @@ export interface ISetTaskRequest {
   completed: boolean;
 }
 
+export interface ISetTaaskResponse {
+  code: CODES;
+  result: string;
+}
+
 export interface IVisitBarResponse {
   code: CODES;
   result: string;
 }
 
-export interface IGoNextStageResponse {
+export interface IChangeStageResponse {
   code: CODES,
   result: string;
-  data:  unknown;
+  data: unknown;
 }

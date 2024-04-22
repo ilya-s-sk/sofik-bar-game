@@ -24,7 +24,7 @@ const password = reactive<ILoginField>({
   value: "",
   showError: false,
   validate() {
-    return this.value.length > 6;
+    return this.value.length >= 4;
   },
 });
 
