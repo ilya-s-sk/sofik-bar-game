@@ -24,7 +24,7 @@ const changeUserScore = (increase: boolean) => {
 <template>
   <div :class="$style.userItem">
     <div :class="$style.info">
-      <h3 :class="$style.name">{{ userData.name }}</h3>
+      <h3 :class="$style.name">{{ userData.login }}</h3>
       <p>Счёт: {{ userData.score }}</p>
     </div>
     <div :class="$style.controls">

@@ -1,0 +1,44 @@
+.title {
+  margin-bottom: 20px;
+}
+
+.userBlock {
+  padding: 20px 0;
+}
+
+.userBlock:not(:last-child) {
+  border-bottom: 1px solid var(--light-blue);
+}
+
+.infoBlock {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.infoBlock:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.infoBlock p {
+  font-size: 20px;
+  font-style: italic;
+}
+
+.infoBlock p span {
+  font-size: 24px;
+  font-style: normal;
+}
+
+.actions {
+  padding-top: 20px;
+}
+
+.actionBlock {
+  display: flex;
+  gap: 10px;
+}
+
+.numberInput {
+  width: 100px;
+}

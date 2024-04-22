@@ -26,7 +26,7 @@ const changeStage = async () => {
       :disabled="store.userData.isReady"
       :loading="!store.userData.isReady && pending"
       @click="finishStage"
-    >Я тут всё</UIButton>
+    >С этим баром всё</UIButton>
     <UIButton 
       :disabled="!store.userData.isReady"
       :loading="store.userData.isReady && pending"

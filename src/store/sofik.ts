@@ -8,18 +8,22 @@ interface IState {
   users: IUserData[],
 }
 
-const MOSK_USERS_DATA = [
-  {
-    id: 0,
-    name: 'Даник',
-    score: 0,
-  },
-  {
-    id: 1,
-    name: 'Даник Еще один',
-    score: 0,
-  },
-]
+const MOSK_USERS_DATA = {
+  users: [
+    {
+      id: 13,
+      login: 'Даник',
+      score: 0,
+      isSofik: 0,
+    },
+    {
+      id: 14,
+      login: 'Даник Еще один',
+      score: 0,
+      isSofik: 0,
+    },
+  ]
+}
 
 export const useSofikStore = defineStore('sofik', {
   state: (): IState => ({
@@ -27,14 +31,21 @@ export const useSofikStore = defineStore('sofik', {
   }),
   actions: {
     async getUsers() {
-      const users = MOSK_USERS_DATA  //await api.sofikGetUsers();
-      if (!users || !users.length) {
+      const dialogStore = useDialogStore();
+      const response = await api.getUsers();
+
+      if (!response || !response.users) {
+        dialogStore.showDialog(`<p>
+          Что-то пошло не так<br>
+          Попробуй ещё раз позже<br>
+          ${ response && 'result' in response ? response.result : '' }
+        </p>`);
         return;
       }
-      this.users = users;
+      this.users = response.users;
     },
     async changeUserScore(id: number, options: IChangeScoreOptions) {
-      const doalogStore = useDialogStore();
+      const dialogStore = useDialogStore();
       const userIndex = this.users.findIndex(user => user.id === id);
 
       if (userIndex === -1) return;
@@ -43,7 +54,7 @@ export const useSofikStore = defineStore('sofik', {
       const response = await api.sofikSetScore({ userId: id, count: options.amount });
 
       if (!response || !response.count) {
-        doalogStore.showDialog(`<p>
+        dialogStore.showDialog(`<p>
           Что-то пошло не так<br>
           Попробуй ещё раз позже<br>
           Ошибка: ${response?.result}

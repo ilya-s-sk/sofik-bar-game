@@ -22,10 +22,11 @@ const complete = () => {
     <p>{{ taskData.desc }}</p>
     <p>За него получишь баллов: {{ taskData.cost }}</p>
     <UIButton
-      :theme="taskData.completed ? 'red' : 'blue'"
+      v-if="!taskData.completed"
       :loading="pending"
       @click="complete"
-    >{{ taskData.completed ? "Передумать" : "Готово!" }}</UIButton>
+    >Готово!</UIButton>
+    <p v-if="taskData.completed" :class="$style.textComplete">Задание выполнено!</p>
   </div>
 </template>
 

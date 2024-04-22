@@ -4,13 +4,14 @@ export interface ILoginField {
   validate: () => boolean
 }
 
-export interface IUserData {
+export interface IGameUserData {
   id: number;
   name: string;
   isSofik: boolean;
   score: number;
   isReady: boolean;
   stage?: 'beforeGame' | 'game' | 'afterGame',
+  isAdmin?: boolean;
 }
 
 export interface ITaskEntity {

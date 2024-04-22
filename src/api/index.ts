@@ -9,7 +9,8 @@ import {
   ISetScoreResponse, 
   IVisitBarResponse, 
   IChangeStageResponse, 
-  ISetTaaskResponse
+  ISetTaaskResponse,
+  IGetUsersResponse
 } from './types'
 
 const BASE_URL = 'http://sofiqgame.dlyamegaturboultrakachkov.keenetic.link:80/api';
@@ -61,12 +62,20 @@ class Api {
     return await this.fetch<IChangeStageResponse>({ url: 'user/visit_bar', method: 'POST', body: { player_id: id } });
   }
 
-  async sofikGetUsers() {
-    return this.fetch<IUserData[]>({ url: 'sofik/get-users', });
+  async getUsers() {
+    return this.fetch<IGetUsersResponse>({ url: 'get_users', });
   }
 
   async sofikSetScore(body: ISetScoreRequest) {
     return this.fetch<ISetScoreResponse>({ url: `sofik/set-score`, method: 'POST', body });
+  }
+
+  async systemChangeCircle(player_id: number, circle: number) {
+    return this.fetch({ url: 'system/change_circle', method: 'POST', body: { player_id, circle } });
+  }
+
+  async systemDeleteUser(player_id: number) {
+    return this.fetch({ url: 'system/delete_user', method: 'POST', body: { player_id } })
   }
 }
 

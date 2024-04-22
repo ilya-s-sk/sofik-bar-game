@@ -19,17 +19,21 @@ export interface ILoginResponse {
 
 export interface IUserData {
   id: number;
-  name: string;
+  login: string;
   score: number;
+  isSofik: number;
+  currentCircle?: number;
+  is_completed?: number;
 }
 
 export interface ICurrentDataResponse {
   id: number;
   name: string;
   stage: 'beforeGame' | 'game' | 'afterGame',
-  isSofik: boolean;
-  is_ready: boolean;
-  data: {
+  isSofik: number;
+  is_ready: number;
+  isAdmin: number;
+  data?: {
     tasks?: ITaskEntityFromCurrentData[],
   }
 }
@@ -57,7 +61,6 @@ export interface ISetScoreResponse {
 export interface ISetTaskRequest {
   userId: number;
   taskId: number;
-  completed: boolean;
 }
 
 export interface ISetTaaskResponse {
@@ -74,4 +77,8 @@ export interface IChangeStageResponse {
   code: CODES,
   result: string;
   data: unknown;
+}
+
+export interface IGetUsersResponse {
+  users?: IUserData[];
 }

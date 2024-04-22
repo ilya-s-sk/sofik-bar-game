@@ -15,14 +15,14 @@ const openTasks = () => {
 
 const completeTask = async (task: ITaskEntity) => {
   pendingTaskId.value = task.id;
-  await userStore.updateTaskById(task.id, { completed: !task.completed });
+  await userStore.updateTaskById(task.id);
   pendingTaskId.value = null;
 };
 </script>
 
 <template>
   <section :class="$style.gamePage">
-    <h2 :class="$style.scoreTitle">Твои очки: {{ userStore.userData.score }}</h2>
+    <h2 :class="$style.scoreTitle">Привет, {{ userStore.userData.name }}. Твои очки: {{ userStore.userData.score }}</h2>
     <p>Тебе в этот бар: {{ userStore.currentBarName }}</p>
 
     <div v-if="!userStore.gameOptions.showTasks" :class="$style.showTasksBlock">

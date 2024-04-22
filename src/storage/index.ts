@@ -1,4 +1,4 @@
-import { IUserData, ITaskEntity, IGameOptions } from "~/types";
+import { IGameUserData, ITaskEntity, IGameOptions } from "~/types";
 
 const USER_DATA_LS_KEY = 'sofik-bar-game-user-data';
 const TASKS_LIST_LS_KEY= 'sofik-bar-game-tasks-list';
@@ -35,12 +35,12 @@ class StorageEntry {
     localStorage.removeItem(key);
   }
 
-  setUserData(userData: IUserData) {
-    this.setItem<IUserData>(USER_DATA_LS_KEY, userData);
+  setUserData(userData: IGameUserData) {
+    this.setItem<IGameUserData>(USER_DATA_LS_KEY, userData);
   }
 
   getUserData() {
-    return this.getJsonItem<IUserData>(USER_DATA_LS_KEY);
+    return this.getJsonItem<IGameUserData>(USER_DATA_LS_KEY);
   }
 
   setTasksList(tasksList: ITaskEntity[]) {

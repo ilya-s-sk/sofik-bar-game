@@ -2,9 +2,9 @@ import { defineStore } from "pinia";
 import { api } from '~/api';
 import { ILoginBody } from "~/api/types";
 import { CODES } from "~/api/consts";
-import { IGameOptions, ITaskEntity, IUserData } from "~/types";
+import { IGameOptions, ITaskEntity, IGameUserData } from "~/types";
+import { IUserData as IApiUserData } from "~/api/types";
 import { useDialogStore } from "./dialog";
-import { storageEntry } from "~/storage";
 
 const MOCK_TASKS_DATA = {
   currentBarName: 'Лучший бар в мире',
@@ -25,10 +25,11 @@ const MOCK_TASKS_DATA = {
 }
 
 interface IState {
-  userData: IUserData;
+  userData: IGameUserData;
   currentBarName: string;
   tasksList: ITaskEntity[];
   gameOptions: IGameOptions;
+  resultUsers: IApiUserData[];
 }
 
 export const useUserStore = defineStore('user', {
@@ -39,6 +40,7 @@ export const useUserStore = defineStore('user', {
       isSofik: false,
       score: 0,
       isReady: false,
+      isAdmin: false,
     },
 
     gameOptions: {
@@ -48,6 +50,8 @@ export const useUserStore = defineStore('user', {
     currentBarName: '',
 
     tasksList: [],
+
+    resultUsers: [],
   }),
   getters: {
     hasUserData(): boolean {
@@ -62,26 +66,31 @@ export const useUserStore = defineStore('user', {
       )
     },
     isGameNotStarted(state) {
-      return state.userData.stage !== 'game';
+      return state.userData.stage === 'beforeGame';
+    },
+    isGameNow(state) {
+      return state.userData.stage === 'game';
+    },
+    isGameEnded(state) {
+      return state.userData.stage === 'afterGame';
     }
   },
   actions: {
-    setUserData(userData: Partial<IUserData>) {
+    setUserData(userData: Partial<IGameUserData>) {
       this.userData = {
         ...this.userData,
         ...userData,
       }
     },
 
-    async updateTaskById(id: number, data: Partial<ITaskEntity>) {
+    async updateTaskById(id: number) {
       const taskIndex = this.tasksList.findIndex(t => t.id === id);
 
       if (taskIndex === -1) return;
 
       const response = await api.setTaskStatus({ 
         userId: this.userData.id, 
-        taskId: id, 
-        completed: data.completed! 
+        taskId: id,
       });
 
       if (!response || response.code !== CODES.SUCCESS) {
@@ -90,10 +99,10 @@ export const useUserStore = defineStore('user', {
 
       const task = this.tasksList[taskIndex];
 
-      this.userData.score += task.cost * (data.completed ? -1 : 1);
+      this.userData.score += task.cost;
       this.tasksList[taskIndex] = {
         ...this.tasksList[taskIndex],
-        ...data,
+        completed: true,
       };
     },
 
@@ -102,7 +111,10 @@ export const useUserStore = defineStore('user', {
 
       const result = await api.login(data);
 
-      if (!result) return;
+      if (!result) {
+        this.showDialogWithMessage('', result);
+        return;
+      };
 
       if (!result.id || typeof result.id !== 'number' || result.code === CODES.ERROR) {
         dialogStore.showDialog('<h2>Перепроверь имя и пароль</h2>');
@@ -111,14 +123,12 @@ export const useUserStore = defineStore('user', {
   
       this.setUserData({ id: result.id, name: data.login, });
     },
+
     async getUserData() {
       const response = await api.getUserData(this.userData.id);
 
       if (!response) {
-        this.showDialogWithMessage(`<p>
-          Что-то пошло не так<br>
-          Попробуй ещё раз позже
-        </p>`);
+        this.showDialogWithMessage('', response);
         return
       };
 
@@ -129,13 +139,14 @@ export const useUserStore = defineStore('user', {
         ...userData,
         isSofik: Boolean(userData.isSofik),
         isReady: Boolean(userData.is_ready),
+        isAdmin: Boolean(userData.isAdmin),
       };
 
-      this.tasksList = (data.tasks || []).map(({ id, name, desc, cost, is_completed }) => ({
+      this.tasksList = (data?.tasks || []).map(({ id, name, desc, cost, is_completed }) => ({
         id,
         title: name,
         desc,
-        cost: cost,
+        cost,
         completed: Boolean(is_completed)
       }))
     },
@@ -150,11 +161,7 @@ export const useUserStore = defineStore('user', {
       const response = await api.finishStage(this.userData.id);
 
       if (!response || response.code !== CODES.SUCCESS) {
-        this.showDialogWithMessage(`<p>
-          Что-то пошло не так<br>
-          Попробуй ещё раз позже<br>
-          Ошибка: ${response?.result}
-        </p>`);
+        this.showDialogWithMessage('', response);
         return;
       }
 
@@ -175,9 +182,28 @@ export const useUserStore = defineStore('user', {
       this.gameOptions.showTasks = false;
       await this.getUserData();
     },
-    showDialogWithMessage(message: string) {
+    async getResults() {
+      const response = await api.getUsers();
+
+      if (!response || !response.users) {
+        this.showDialogWithMessage('', response);
+        return;
+      }
+
+      const users = response.users
+        .filter(user => !user.isSofik)
+        .sort((a, b) => b.score - a.score);
+      this.resultUsers = users;
+    },
+    showDialogWithMessage(message?: string, response?: unknown) {
       const dialogStore = useDialogStore();
-      dialogStore.showDialog(message);
+      const defaultError = `<p>
+        Что-то пошло не так<br>
+        Попробуй ещё раз позже<br>
+        ${(response ? JSON.stringify(response) : '')}
+      </p>`
+
+      dialogStore.showDialog(message || defaultError);
     }
   },
 });
