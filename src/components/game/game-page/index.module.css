@@ -1,4 +1,5 @@
 .watingInfo {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -14,17 +15,12 @@
 }
 
 .gamePage {
+  margin-top: 20px;
   position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-}
-
-.header {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  justify-content: space-between;
 }
 
 .scoreLabel {

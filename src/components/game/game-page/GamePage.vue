@@ -5,7 +5,6 @@ import { useUserStore } from "~/store/user";
 import { ITaskEntity } from "~/types";
 import Actions from "./actions/Actions.vue";
 import TaskItem from "./task-item/TaskItem.vue";
-import ProfileModal from "./profile-modal/ProfileModal.vue";
 
 const userStore = useUserStore();
 const pendingTaskId: Ref<number|null> = ref(null);
@@ -40,10 +39,8 @@ const update = async () => {
 
   <section v-else :class="$style.gamePage">
     <header :class="$style.header">
-      <div>
-        <p :class="$style.scoreLabel">Твои очки: <span :class="$style.score">{{ userStore.userData.score }}</span></p>
-        <h2 :class="$style.nameLabel">Привет, {{ userStore.userData.name }}</h2>
-      </div>
+      <p :class="$style.scoreLabel">Твои очки: <span :class="$style.score">{{ userStore.userData.score }}</span></p>
+      <h2 :class="$style.nameLabel">Привет, {{ userStore.userData.name }}</h2>
       <ProfileModal />
     </header>
     <p :class="$style.barLabel">Тебе в этот бар:<br><span :class="$style.bar">{{ userStore.currentBarName.name }}</span></p>

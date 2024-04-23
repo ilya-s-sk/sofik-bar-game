@@ -70,7 +70,7 @@ class Api {
   }
 
   async sofikStartGame() {
-    return this.fetch({ url: 'system/start_new_game', method: 'POST' });
+    return this.fetch({ url: 'system/new_game', method: 'POST' });
   }
 
   async sofikSetScore(body: ISetScoreRequest) {
