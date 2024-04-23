@@ -18,9 +18,9 @@ const complete = () => {
 
 <template>
   <div :class="$style.task">
-    <h3>{{ taskData.title }}</h3>
-    <p>{{ taskData.desc }}</p>
-    <p>За него получишь баллов: {{ taskData.cost }}</p>
+    <h3 :class="$style.title">{{ taskData.title }}</h3>
+    <p :class="$style.desc">{{ taskData.desc }}</p>
+    <p>За него получишь баллов: <span :class="$style.cost">{{ taskData.cost }}</span></p>
     <UIButton
       v-if="!taskData.completed"
       :loading="pending"

@@ -46,7 +46,7 @@ export interface ITaskEntityFromCurrentData {
   name: string,
   desc: string,
   cost: number,
-  is_completed: 0 | 1,
+  is_completed: 0 | 1 | -1,
 }
 
 export interface ISetScoreRequest {

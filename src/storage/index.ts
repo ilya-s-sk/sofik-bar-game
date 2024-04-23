@@ -1,4 +1,4 @@
-import { IGameUserData, ITaskEntity, IGameOptions } from "~/types";
+import { IGameUserData, ITaskEntity, IGameOptions, ICurrentBar } from "~/types";
 
 const USER_DATA_LS_KEY = 'sofik-bar-game-user-data';
 const TASKS_LIST_LS_KEY= 'sofik-bar-game-tasks-list';
@@ -56,7 +56,7 @@ class StorageEntry {
   }
 
   getCurrentBarName() {
-    return this.getItem(CURRENT_BAR_LS_KEY);
+    return this.getJsonItem<ICurrentBar>(CURRENT_BAR_LS_KEY);
   }
 
   setTasksVisibilityStatus() {

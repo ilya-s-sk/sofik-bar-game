@@ -54,8 +54,8 @@ class Api {
     return await this.fetch<ISetTaaskResponse>({ url: `user/set_task_complete`, method: 'POST', body })
   }
 
-  async finishStage(id: number) {
-    return await this.fetch<IVisitBarResponse>({ url: 'user/go_next', method: 'POST', body: { player_id: id } });
+  async finishStage(id: number, barId: number) {
+    return await this.fetch<IVisitBarResponse>({ url: 'user/go_next', method: 'POST', body: { player_id: id, bar_id: barId } });
   }
 
   async changeStage(id: number) {

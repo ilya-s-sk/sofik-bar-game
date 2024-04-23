@@ -11,7 +11,6 @@ export interface IGameUserData {
   score: number;
   isReady: boolean;
   stage?: 'beforeGame' | 'game' | 'afterGame',
-  isAdmin?: boolean;
 }
 
 export interface ICurrentBar {

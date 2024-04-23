@@ -11,15 +11,17 @@ const MOCK_TASKS_DATA = {
   tasksList: [
     {
       id: 0,
-      title: 'Задание 1',
+      name: 'Задание 1',
+      desc: 'Описание',
       cost: 10,
-      completed: false,
+      is_completed: 0,
     },
     {
       id: 1,
-      title: 'Задание 2',
+      name: 'Задание 2',
+      desc: 'Описание',
       cost: 8,
-      completed: false,
+      is_completed: -1,
     },
   ]
 }
@@ -40,7 +42,6 @@ export const useUserStore = defineStore('user', {
       isSofik: false,
       score: 0,
       isReady: false,
-      isAdmin: false,
     },
 
     gameOptions: {
@@ -141,12 +142,15 @@ export const useUserStore = defineStore('user', {
 
       const { data, current_bar, ...userData } = response;
 
+      if (this.userData.isReady !== !!userData.is_ready) {
+        this.gameOptions.showTasks = false;
+      }
+
       this.userData = {
         ...this.userData,
         ...userData,
         isSofik: Boolean(userData.isSofik),
         isReady: Boolean(userData.is_ready),
-        isAdmin: Boolean(userData.isAdmin),
       };
 
       this.currentBarName = {
@@ -155,13 +159,15 @@ export const useUserStore = defineStore('user', {
         address: current_bar?.address || '',
       }
 
-      this.tasksList = (data?.tasks || []).map(({ id, name, desc, cost, is_completed }) => ({
-        id,
-        title: name,
-        desc,
-        cost,
-        completed: Boolean(is_completed)
-      }))
+      this.tasksList = (data?.tasks || [])
+        .filter(t => t.is_completed !== -1)
+        .map(({ id, name, desc, cost, is_completed }) => ({
+          id,
+          title: name,
+          desc,
+          cost,
+          completed: Boolean(is_completed)
+        }))
     },
     async startGame() {
       await this.getUserData();
@@ -171,7 +177,7 @@ export const useUserStore = defineStore('user', {
       };
     },
     async finishStage() {
-      const response = await api.finishStage(this.userData.id);
+      const response = await api.finishStage(this.userData.id, this.currentBarName.id);
 
       if (!response || response.code !== CODES.SUCCESS) {
         this.showDialogWithMessage('', response);
@@ -190,8 +196,9 @@ export const useUserStore = defineStore('user', {
 
       if(response.code === CODES.PLAYERS_ARE_NOT_READY) {
         this.showDialogWithMessage(`<p>
-          Ещё не все игроки готовы<br>
-          Покричите на них в чате<br>
+          Ещё не все игроки готовы, ждём остальных<br>
+          Когда все будут готовы, можно получить новый бар и задания<br>
+          Для этого нажми еще раз кнопку или обнови страницу<br>
           ${response?.result}
         </p>`);
         return;
