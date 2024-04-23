@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { api } from '~/api';
 import { ILoginBody } from "~/api/types";
 import { CODES } from "~/api/consts";
-import { IGameOptions, ITaskEntity, IGameUserData } from "~/types";
+import { IGameOptions, ITaskEntity, IGameUserData, ICurrentBar } from "~/types";
 import { IUserData as IApiUserData } from "~/api/types";
 import { useDialogStore } from "./dialog";
 
@@ -26,7 +26,7 @@ const MOCK_TASKS_DATA = {
 
 interface IState {
   userData: IGameUserData;
-  currentBarName: string;
+  currentBarName: ICurrentBar;
   tasksList: ITaskEntity[];
   gameOptions: IGameOptions;
   resultUsers: IApiUserData[];
@@ -47,7 +47,11 @@ export const useUserStore = defineStore('user', {
       showTasks: false,
     },
 
-    currentBarName: '',
+    currentBarName: {
+      address: '',
+      name: '',
+      id: -1,
+    },
 
     tasksList: [],
 
@@ -122,9 +126,12 @@ export const useUserStore = defineStore('user', {
       }
   
       this.setUserData({ id: result.id, name: data.login, });
+      await this.getUserData();
     },
 
     async getUserData() {
+      if (this.userData.id === -1) return;
+
       const response = await api.getUserData(this.userData.id);
 
       if (!response) {
@@ -132,7 +139,7 @@ export const useUserStore = defineStore('user', {
         return
       };
 
-      const { data, ...userData } = response;
+      const { data, current_bar, ...userData } = response;
 
       this.userData = {
         ...this.userData,
@@ -141,6 +148,12 @@ export const useUserStore = defineStore('user', {
         isReady: Boolean(userData.is_ready),
         isAdmin: Boolean(userData.isAdmin),
       };
+
+      this.currentBarName = {
+        id: current_bar?.id || -1,
+        name: current_bar?.name || '',
+        address: current_bar?.address || '',
+      }
 
       this.tasksList = (data?.tasks || []).map(({ id, name, desc, cost, is_completed }) => ({
         id,
@@ -170,7 +183,12 @@ export const useUserStore = defineStore('user', {
     async changeStage() {
       const response = await api.changeStage(this.userData.id);
 
-      if (!response || response.code === CODES.PLAYERS_ARE_NOT_READY) {
+      if (!response || response.code === CODES.INVALID_JSON) {
+        this.showDialogWithMessage('', response);
+        return;
+      }
+
+      if(response.code === CODES.PLAYERS_ARE_NOT_READY) {
         this.showDialogWithMessage(`<p>
           Ещё не все игроки готовы<br>
           Покричите на них в чате<br>
@@ -191,7 +209,7 @@ export const useUserStore = defineStore('user', {
       }
 
       const users = response.users
-        .filter(user => !user.isSofik)
+        .filter(user => !user.is_sofik)
         .sort((a, b) => b.score - a.score);
       this.resultUsers = users;
     },

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount } from "vue";
+import { onBeforeMount, ref } from "vue";
 import Login from "~/components/login/Login.vue";
 import Game from '~/components/game/Game.vue';
 import UIDialog from "./components/ui/dialog/UI-Dialog.vue";
@@ -10,7 +10,9 @@ import { useDialogStore } from '~/store/dialog';
 const store = useUserStore();
 const dialogStore = useDialogStore();
 
-onBeforeMount(() => {
+const pending = ref(false);
+
+onBeforeMount(async () => {
   // Достаём данные, сохраненные в localStorage
   const storedData: { data: unknown, field: keyof typeof store.$state }[] = [
     { data: storageEntry.getUserData(), field: 'userData' },
@@ -25,21 +27,26 @@ onBeforeMount(() => {
   });
 
   useUserStore().$subscribe((_, state) => {
-  [
-    { state: state.userData, action: storageEntry.setUserData.bind(storageEntry) },
-    { state: state.gameOptions, action: storageEntry.setGameOptions.bind(storageEntry) },
-    { state: state.tasksList, action: storageEntry.setTasksList.bind(storageEntry) },
-    { state: state.currentBarName, action: storageEntry.setCurrentBarName.bind(storageEntry) },
-  ].forEach(item => {
-    item.action(item.state as any) // TODO fix type
+    [
+      { state: state.userData, action: storageEntry.setUserData.bind(storageEntry) },
+      { state: state.gameOptions, action: storageEntry.setGameOptions.bind(storageEntry) },
+      { state: state.tasksList, action: storageEntry.setTasksList.bind(storageEntry) },
+      { state: state.currentBarName, action: storageEntry.setCurrentBarName.bind(storageEntry) },
+    ].forEach(item => {
+      item.action(item.state as any) // TODO fix type
+    });
   });
-});
+
+  pending.value = true;
+  await store.getUserData();
+  pending.value = false;
 })
 </script>
 
 <template>
   <main :class="$style.main">
-    <Login v-if="!store.hasUserData" />
+    <h1 v-if="pending">Загрузка...</h1>
+    <Login v-else-if="!store.hasUserData" />
     <Game v-else />
 
     <UIDialog

@@ -5,10 +5,40 @@
   width: 100%;
 }
 
-.scoreTitle {
-  font-size: 20px;
+.scoreLabel {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.score {
+  color: var(--red);
+}
+
+.nameLabel {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.barLabel {
+  font-size: 24px;
   margin-bottom: 10px;
 }
+
+.bar {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.adressLabel {
+  font-size: 24px;
+}
+
+.buttonOpen {
+  width: 100%;
+}
+
 
 .showTasksBlock {
   display: flex;

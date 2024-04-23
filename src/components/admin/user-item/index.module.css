@@ -30,7 +30,3 @@
 .actionBlock:not(:last-child) {
   margin-bottom: 20px;
 }
-
-.numberInput {
-  width: 100px;
-}

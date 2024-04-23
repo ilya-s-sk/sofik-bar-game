@@ -9,17 +9,17 @@ const MOSK_USERS_DATA: IState = {
       id: 13,
       login: 'Даник',
       score: 0,
-      isSofik: 0,
-      currentCircle: 1,
-      is_completed: 1,
+      is_sofik: 0,
+      current_circle: 1,
+      is_ready: 1,
     },
     {
       id: 14,
       login: 'Даник Еще один',
       score: 0,
-      isSofik: 0,
-      currentCircle: 1,
-      is_completed: 1,
+      is_sofik: 0,
+      current_circle: 1,
+      is_ready: 1,
     },
   ]
 }
@@ -44,16 +44,18 @@ export const useAdminStore = defineStore('admin', {
       this.users = response.users;
     },
 
-    async changeCircle(userId: number, circle: number) {
-      const response = await api.systemChangeCircle(userId, circle);
+    async forceNextCircle() {
+      const response = await api.systemForceNextCircle();
 
       if (!response) {
         this.showError(response)
         return;
       }
 
-      const userIndex = this.users.findIndex(u => u.id === userId);
-      this.users[userIndex].currentCircle = circle;
+      this.users = this.users.map(u => ({
+        ...u,
+        current_circle: u.current_circle + 1,
+      }))
     },
 
     async deleteUser(userId: number) {

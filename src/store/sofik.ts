@@ -30,6 +30,20 @@ export const useSofikStore = defineStore('sofik', {
     users: [],
   }),
   actions: {
+    async startGame() {
+      const dialogStore = useDialogStore();
+      const response = await api.sofikStartGame();
+
+      if (!response) {
+        dialogStore.showDialog(`<p>
+          Что-то пошло не так<br>
+          Попробуй ещё раз позже<br>
+        </p>`);
+        return;
+      }
+
+      await this.getUsers();
+    },
     async getUsers() {
       const dialogStore = useDialogStore();
       const response = await api.getUsers();
@@ -42,7 +56,7 @@ export const useSofikStore = defineStore('sofik', {
         </p>`);
         return;
       }
-      this.users = response.users;
+      this.users = response.users.filter(u => !u.is_sofik);
     },
     async changeUserScore(id: number, options: IChangeScoreOptions) {
       const dialogStore = useDialogStore();

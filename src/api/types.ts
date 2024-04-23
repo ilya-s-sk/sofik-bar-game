@@ -1,3 +1,4 @@
+import { ICurrentBar } from '~/types';
 import { CODES } from './consts';
 
 export interface IFetchOptions {
@@ -21,9 +22,10 @@ export interface IUserData {
   id: number;
   login: string;
   score: number;
-  isSofik: number;
-  currentCircle?: number;
-  is_completed?: number;
+  is_ready: number;
+  is_sofik: number;
+  current_circle: number;
+  is_completed?: string;
 }
 
 export interface ICurrentDataResponse {
@@ -33,6 +35,7 @@ export interface ICurrentDataResponse {
   isSofik: number;
   is_ready: number;
   isAdmin: number;
+  current_bar?: ICurrentBar;
   data?: {
     tasks?: ITaskEntityFromCurrentData[],
   }

@@ -14,6 +14,12 @@ export interface IGameUserData {
   isAdmin?: boolean;
 }
 
+export interface ICurrentBar {
+  address: string;
+  name: string;
+  id: number;
+}
+
 export interface ITaskEntity {
   id: number;
   title: string;

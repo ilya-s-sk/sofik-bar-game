@@ -22,12 +22,14 @@ const completeTask = async (task: ITaskEntity) => {
 
 <template>
   <section :class="$style.gamePage">
-    <h2 :class="$style.scoreTitle">Привет, {{ userStore.userData.name }}. Твои очки: {{ userStore.userData.score }}</h2>
-    <p>Тебе в этот бар: {{ userStore.currentBarName }}</p>
+    <p :class="$style.scoreLabel">Твои очки: <span :class="$style.score">{{ userStore.userData.score }}</span></p>
+    <h2 :class="$style.nameLabel">Привет, {{ userStore.userData.name }}</h2>
+    <p :class="$style.barLabel">Тебе в этот бар:<br><span :class="$style.bar">{{ userStore.currentBarName.name }}</span></p>
+    <p :class="$style.adressLabel">Адрес: <span :class="$style.address">{{ userStore.currentBarName.address }}</span></p>
 
     <div v-if="!userStore.gameOptions.showTasks" :class="$style.showTasksBlock">
       <p>Когда дойдешь, можешь открыть задания</p>
-      <UIButton @click="openTasks">Я на месте</UIButton>
+      <UIButton :class="$style.buttonOpen" @click="openTasks">Я на месте</UIButton>
     </div>
 
     <template v-else>

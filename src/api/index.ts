@@ -51,7 +51,7 @@ class Api {
   }
 
   async setTaskStatus(body: ISetTaskRequest) {
-    return await this.fetch<ISetTaaskResponse>({ url: `user/set-task`, method: 'POST', body })
+    return await this.fetch<ISetTaaskResponse>({ url: `user/set_task_complete`, method: 'POST', body })
   }
 
   async finishStage(id: number) {
@@ -66,12 +66,16 @@ class Api {
     return this.fetch<IGetUsersResponse>({ url: 'get_users', });
   }
 
+  async sofikStartGame() {
+    return this.fetch({ url: 'sofik/start_game', method: 'POST' });
+  }
+
   async sofikSetScore(body: ISetScoreRequest) {
     return this.fetch<ISetScoreResponse>({ url: `sofik/set-score`, method: 'POST', body });
   }
 
-  async systemChangeCircle(player_id: number, circle: number) {
-    return this.fetch({ url: 'system/change_circle', method: 'POST', body: { player_id, circle } });
+  async systemForceNextCircle() {
+    return this.fetch({ url: 'system/force_next_circle', method: 'POST' });
   }
 
   async systemDeleteUser(player_id: number) {
