@@ -50,7 +50,7 @@ export const useSofikStore = defineStore('sofik', {
       const user = this.users[userIndex];
       const response = await api.sofikSetScore({ userId: id, count: options.amount });
 
-      if (!response || !response.count) {
+      if (!response || typeof response?.count !== 'number') {
         dialogStore.showDialog(`<p>
           Что-то пошло не так<br>
           Попробуй ещё раз позже<br>

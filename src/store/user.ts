@@ -167,7 +167,8 @@ export const useUserStore = defineStore('user', {
     async changeStage() {
       const response = await api.changeStage(this.userData.id, this.currentBarName.id);
 
-      if (!response || response.code === CODES.INVALID_JSON) {
+      const isErrorCode = response?.code && [CODES.INVALID_JSON, CODES.ERROR, CODES.FATAL_ERROR].includes(response?.code);
+      if (!response || isErrorCode) {
         this.showDialogWithMessage('', response);
         return;
       }
