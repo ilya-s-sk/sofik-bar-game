@@ -43,6 +43,10 @@ class StorageEntry {
     return this.getJsonItem<IGameUserData>(USER_DATA_LS_KEY);
   }
 
+  deleteUserData() {
+    this.removeItem(USER_DATA_LS_KEY);
+  }
+
   setTasksList(tasksList: ITaskEntity[]) {
     this.setItem<ITaskEntity[]>(TASKS_LIST_LS_KEY, tasksList);
   }

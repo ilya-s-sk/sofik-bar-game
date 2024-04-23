@@ -10,6 +10,7 @@ export interface IGameUserData {
   isSofik: boolean;
   score: number;
   isReady: boolean;
+  current_circle: number;
   stage?: 'beforeGame' | 'game' | 'afterGame',
 }
 
@@ -33,4 +34,5 @@ export interface IChangeScoreOptions {
 
 export interface IGameOptions {
   showTasks: boolean;
+  isReady: boolean;
 }

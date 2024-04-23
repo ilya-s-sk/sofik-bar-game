@@ -6,26 +6,6 @@ import { IGameOptions, ITaskEntity, IGameUserData, ICurrentBar } from "~/types";
 import { IUserData as IApiUserData } from "~/api/types";
 import { useDialogStore } from "./dialog";
 
-const MOCK_TASKS_DATA = {
-  currentBarName: 'Лучший бар в мире',
-  tasksList: [
-    {
-      id: 0,
-      name: 'Задание 1',
-      desc: 'Описание',
-      cost: 10,
-      is_completed: 0,
-    },
-    {
-      id: 1,
-      name: 'Задание 2',
-      desc: 'Описание',
-      cost: 8,
-      is_completed: -1,
-    },
-  ]
-}
-
 interface IState {
   userData: IGameUserData;
   currentBarName: ICurrentBar;
@@ -42,10 +22,12 @@ export const useUserStore = defineStore('user', {
       isSofik: false,
       score: 0,
       isReady: false,
+      current_circle: 0,
     },
 
     gameOptions: {
       showTasks: false,
+      isReady: false,
     },
 
     currentBarName: {
@@ -169,6 +151,7 @@ export const useUserStore = defineStore('user', {
           completed: Boolean(is_completed)
         }))
     },
+
     async startGame() {
       await this.getUserData();
 
@@ -176,18 +159,13 @@ export const useUserStore = defineStore('user', {
         this.showDialogWithMessage('<h2>Всё еще ждём</h2>');
       };
     },
+
     async finishStage() {
-      const response = await api.finishStage(this.userData.id, this.currentBarName.id);
-
-      if (!response || response.code !== CODES.SUCCESS) {
-        this.showDialogWithMessage('', response);
-        return;
-      }
-
-      this.userData.isReady = true;
+      this.gameOptions.isReady = true;
     },
+
     async changeStage() {
-      const response = await api.changeStage(this.userData.id);
+      const response = await api.changeStage(this.userData.id, this.currentBarName.id);
 
       if (!response || response.code === CODES.INVALID_JSON) {
         this.showDialogWithMessage('', response);
@@ -204,7 +182,9 @@ export const useUserStore = defineStore('user', {
         return;
       }
 
+      this.userData.isReady = true;
       this.gameOptions.showTasks = false;
+      this.gameOptions.isReady = false;
       await this.getUserData();
     },
     async getResults() {

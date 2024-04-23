@@ -8,23 +8,6 @@ interface IState {
   users: IUserData[],
 }
 
-const MOSK_USERS_DATA = {
-  users: [
-    {
-      id: 13,
-      login: 'Даник',
-      score: 0,
-      isSofik: 0,
-    },
-    {
-      id: 14,
-      login: 'Даник Еще один',
-      score: 0,
-      isSofik: 0,
-    },
-  ]
-}
-
 export const useSofikStore = defineStore('sofik', {
   state: (): IState => ({
     users: [],

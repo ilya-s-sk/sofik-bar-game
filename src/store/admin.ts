@@ -3,27 +3,6 @@ import { api } from "~/api";
 import { IUserData } from "~/api/types";
 import { useDialogStore } from "./dialog";
 
-const MOSK_USERS_DATA: IState = {
-  users: [
-    {
-      id: 13,
-      login: 'Даник',
-      score: 0,
-      is_sofik: 0,
-      current_circle: 1,
-      is_ready: 1,
-    },
-    {
-      id: 14,
-      login: 'Даник Еще один',
-      score: 0,
-      is_sofik: 0,
-      current_circle: 1,
-      is_ready: 1,
-    },
-  ]
-}
-
 interface IState {
   users: IUserData[];
 }

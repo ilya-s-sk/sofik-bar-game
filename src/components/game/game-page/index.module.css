@@ -1,8 +1,30 @@
+.watingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.watingInfo p {
+  font-size: 20px;
+}
+
+.updateButton {
+  margin-top: 20px;
+  width: 100%;
+}
+
 .gamePage {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: space-between;
 }
 
 .scoreLabel {
