@@ -116,8 +116,8 @@ export const useUserStore = defineStore('user', {
       if (this.userData.id === -1) return;
 
       const response = await api.getUserData(this.userData.id);
-
-      if (!response) {
+      const isErrorCode = response?.code && [CODES.INVALID_JSON, CODES.ERROR, CODES.FATAL_ERROR].includes(response.code);
+      if (!response || isErrorCode) {
         this.showDialogWithMessage('', response);
         return
       };

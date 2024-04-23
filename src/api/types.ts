@@ -29,6 +29,7 @@ export interface IUserData {
 }
 
 export interface ICurrentDataResponse {
+  code: CODES;
   id: number;
   name: string;
   stage: 'beforeGame' | 'game' | 'afterGame',

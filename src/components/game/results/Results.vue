@@ -11,7 +11,9 @@ const showResults = async () => {
   pending.value = true;
   await store.getResults();
   pending.value = false;
-  isResultsShow.value = true;
+  if (store.resultUsers.length) {
+    isResultsShow.value = true;
+  }
 }
 </script>
 

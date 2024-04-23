@@ -18,7 +18,7 @@ const BASE_URL = 'http://sofiqgame.dlyamegaturboultrakachkov.keenetic.link:80/ap
 class Api {
   private baseUrl = BASE_URL;
 
-  async fetch<T>({ url, method = 'GET', body }: IFetchOptions): Promise<T | null> {
+  async fetch<T>({ url, method = 'GET', body }: IFetchOptions, fetchCounter = 1): Promise<T | null> {
     const bodyJson = JSON.stringify(body);
     const dialogStore = useDialogStore();
 
@@ -37,6 +37,9 @@ class Api {
 
       return result;
     } catch (err) {
+      if (fetchCounter > 0) {
+        return this.fetch({ url, method, body }, fetchCounter - 1);
+      }
       dialogStore.showErrorDialog(err);
       return null;
     }
