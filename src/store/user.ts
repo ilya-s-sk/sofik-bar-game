@@ -133,6 +133,7 @@ export const useUserStore = defineStore('user', {
         ...userData,
         isSofik: Boolean(userData.isSofik),
         isReady: Boolean(userData.is_ready),
+        current_circle: userData?.current_circle?.current_circle,
       };
 
       this.currentBarName = {

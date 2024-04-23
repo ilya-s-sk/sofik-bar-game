@@ -37,6 +37,9 @@ export interface ICurrentDataResponse {
   is_ready: number;
   isAdmin: number;
   current_bar?: ICurrentBar;
+  current_circle: {
+    current_circle: number;
+  };
   data?: {
     tasks?: ITaskEntityFromCurrentData[],
   }
